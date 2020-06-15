@@ -28,10 +28,7 @@ enum {
 var state = CHASE
 
 func _ready():
-	var something
-	var d = {something:'fun'}
-	print(d)
-	print(stats.health)
+	pass
 
 func _physics_process(delta: float):
 	knockback = knockback.move_toward(Vector2.ZERO, FRICTION * delta)
@@ -96,7 +93,7 @@ func _on_Stats_no_health():
 	enemyDeathEffect.position = position + Vector2(0,-16)
 	get_parent().add_child(enemyDeathEffect)
 	queue_free()
-	get_tree().call_group("textui","set_text","The evil bat is no more!\nYou have won.")
+	EventSystem.add_text("The evil bat is no more!\nYou have won.")
 
 
 

@@ -95,6 +95,7 @@ func _on_HurtBox_area_entered(area):
 	stats.health -= area.damage
 	hurtBox.create_hit_effect(0)
 	hurtBox.start_invincibility(1)
+	return
 	var audio = AudioStreamPlayer.new()
 	get_node("/root").add_child(audio)
 	audio.set("stream", load("res://Music and Sounds/Hurt.wav"))

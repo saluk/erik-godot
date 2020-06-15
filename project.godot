@@ -19,9 +19,14 @@ config/name="Actionrpg"
 run/main_scene="res://World.tscn"
 config/icon="res://icon.png"
 
+[audio]
+
+default_bus_layout="res://Music and Sounds/audiobuslayout.tres"
+
 [autoload]
 
 PlayerStats="*res://Player/PlayerStats.tscn"
+EventSystem="*res://EventSystem.gd"
 
 [display]
 

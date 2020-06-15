@@ -1,9 +1,6 @@
 extends Node2D
 
-onready var pathSystem = $PathSystem
+signal world_ready
 
 func _ready():
-	pathSystem.init()
-
-func _on_Timer_timeout():
-	pathSystem.update_debug()
+	emit_signal("world_ready")

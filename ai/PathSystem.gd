@@ -13,6 +13,9 @@ var last_astar_index:int = 0
 onready var debugLines = $DebugLines
 var startPos = Vector2(7,6)
 
+func _ready():
+	get_tree().current_scene.connect("world_ready", self, "init")
+	
 func init():
 	update_astar()
 	
@@ -150,3 +153,7 @@ func toggle_point_enabled(point:Vector2, enabled:bool):
 	var idx:int = _astar_map.get_closest_point(point, true)
 	_astar_map.set_point_disabled(idx, not enabled)
 
+
+
+func _on_Timer_timeout():
+	update_debug()
