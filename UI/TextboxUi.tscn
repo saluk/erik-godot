@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://UI/TextboxUi.gd" type="Script" id=1]
+[ext_resource path="res://Shadows/LargeShadow.png" type="Texture" id=2]
+
+[sub_resource type="StyleBoxTexture" id=1]
+texture = ExtResource( 2 )
+region_rect = Rect2( 0, 0, 32, 20 )
+
+[node name="TextboxUI" type="Control" groups=[
+"textui",
+]]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="."]
+visible = false
+margin_top = 128.0
+margin_right = 320.0
+margin_bottom = 192.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Text" type="Label" parent="Panel"]
+margin_left = 16.0
+margin_top = 8.0
+margin_right = 304.0
+margin_bottom = 48.0
+text = "This is a textbox
+Full of stuff"
+__meta__ = {
+"_edit_use_anchors_": false
+}
