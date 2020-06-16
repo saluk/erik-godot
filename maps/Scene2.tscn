@@ -580,6 +580,7 @@ position = Vector2( 79, 129 )
 [node name="Teleport" parent="." index="5" groups=[
 "tele_a",
 ] instance=ExtResource( 8 )]
-position = Vector2( -38, 81 )
+position = Vector2( -63, 80 )
 to_scene = "Scene1"
 teleport_group = "tele_a"
+offset = Vector2( 48, 0 )
