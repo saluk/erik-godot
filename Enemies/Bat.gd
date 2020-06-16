@@ -19,6 +19,8 @@ onready var pathFollower = $FollowingObject
 var target = null
 var path = []
 
+var saveable = ["position"]
+
 enum {
 	IDLE,
 	WANDER,
@@ -92,7 +94,7 @@ func _on_Stats_no_health():
 	var enemyDeathEffect = EnemyDeathEffect.instance()
 	enemyDeathEffect.position = position + Vector2(0,-16)
 	get_parent().add_child(enemyDeathEffect)
-	queue_free()
+	SceneManager.delete(self)
 	EventSystem.add_text("The evil bat is no more!\nYou have won.")
 
 
