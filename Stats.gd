@@ -8,6 +8,9 @@ func set_health(value):
 	if health <= 0:
 		emit_signal("no_health")
 	emit_signal("health_changed", health)
+	
+func refresh():
+	emit_signal("health_changed", health)
 
 signal no_health
 signal health_changed(value)

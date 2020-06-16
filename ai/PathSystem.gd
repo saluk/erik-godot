@@ -1,3 +1,4 @@
+tool
 extends Node
 
 export var tileBounds:Rect2 
@@ -13,9 +14,14 @@ var last_astar_index:int = 0
 onready var debugLines = $DebugLines
 var startPos = Vector2(7,6)
 
-func _ready():
-	get_tree().current_scene.connect("world_ready", self, "init")
-	
+func _get_configuration_warning():
+	if get_tree().get_nodes_in_group("collide_walk").size()==0:
+		return "Need at least one tilemap in collide_walk group"
+	if get_tree().get_nodes_in_group("collide_block_tile").size()==0:
+		return "Need at least one tilemap in collide_block_tile group"
+	return ""
+
+#Called by MapScene after all tagged collision objects are loaded
 func init():
 	update_astar()
 	

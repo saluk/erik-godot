@@ -6,10 +6,14 @@ var currentPath = null
 
 signal finished_path
 
-func _ready():
-	pathSystem = get_tree().current_scene.find_node("PathSystem")
+func get_path_system():
+	if pathSystem:
+		return pathSystem
+	pathSystem = get_tree().get_nodes_in_group("PathSystem")[0]
+	return pathSystem
 
 func find_path(posA, posB):
+	if not get_path_system(): return
 	return pathSystem.find_world_path(posA, posB)
 
 func next(posA, posB, recalculate=false):

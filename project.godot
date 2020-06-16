@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Actionrpg"
-run/main_scene="res://World.tscn"
+run/main_scene="res://maps/Scene1.tscn"
 config/icon="res://icon.png"
 
 [audio]
@@ -27,6 +27,7 @@ default_bus_layout="res://Music and Sounds/audiobuslayout.tres"
 
 PlayerStats="*res://Player/PlayerStats.tscn"
 EventSystem="*res://EventSystem.gd"
+SceneManager="*res://SceneManager.gd"
 
 [display]
 
