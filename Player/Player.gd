@@ -86,6 +86,7 @@ func move_state(delta: float, vector = null):
 func _input(event):
 	if event.is_action_pressed("attack"):
 		hasAttacked = true
+		get_tree().set_input_as_handled()
 
 func move():
 	velocity = move_and_slide(velocity)

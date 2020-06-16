@@ -1,0 +1,42 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Effects/BushEffect.gd" type="Script" id=1]
+[ext_resource path="res://World/Grass.png" type="Texture" id=2]
+
+[sub_resource type="Gradient" id=2]
+offsets = PoolRealArray( 0, 0.772575, 0.996656 )
+colors = PoolColorArray( 1, 1, 1, 1, 0.568627, 0.792157, 0.501961, 0, 0.992157, 1, 0.988235, 0 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+
+[sub_resource type="Curve" id=4]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.675438 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=5]
+curve = SubResource( 4 )
+
+[sub_resource type="ParticlesMaterial" id=1]
+flag_disable_z = true
+direction = Vector3( 0, -1, 0 )
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 55.31
+initial_velocity_random = 0.3
+angular_velocity = 45.96
+angular_velocity_random = 1.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+damping = 79.57
+damping_random = 1.0
+scale = 0.5
+scale_random = 1.0
+scale_curve = SubResource( 5 )
+color_ramp = SubResource( 3 )
+
+[node name="BushEffect" type="Particles2D"]
+amount = 50
+explosiveness = 0.91
+process_material = SubResource( 1 )
+texture = ExtResource( 2 )
+script = ExtResource( 1 )

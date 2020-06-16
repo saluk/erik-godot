@@ -799,7 +799,7 @@ parameters/playback = SubResource( 46 )
 parameters/Attack/blend_position = Vector2( 0, 0 )
 parameters/Idle/blend_position = Vector2( 0, 0 )
 parameters/Roll/blend_position = Vector2( 0, 0 )
-parameters/Run/blend_position = Vector2( 0.177201, -0.236051 )
+parameters/Run/blend_position = Vector2( 0.18281, -0.226286 )
 
 [node name="Position2D" type="Position2D" parent="."]
 position = Vector2( 0, 5 )
