@@ -9,6 +9,14 @@ var in_process
 #reapplies those states when scene loads
 var objectStates = {}
 
+var scenes = {}
+
+func _ready():
+	for scene_name in ["Scene1", "Scene2"]:
+		var loaded:Resource = load("res://maps/"+scene_name+".tscn")
+		scenes[scene_name] = loaded
+	finish_loading()
+
 func change_scene(to_scene, teleport_group=null, 
 				  relativeVector=null):
 	old_position = get_tree().get_nodes_in_group("player")[0].position
@@ -16,7 +24,7 @@ func change_scene(to_scene, teleport_group=null,
 	self.teleport_group = teleport_group
 	self.relativeVector = relativeVector
 	save_objects()
-	get_tree().change_scene("res://maps/"+to_scene+".tscn")
+	get_tree().change_scene_to(scenes[to_scene])
 
 func finish_loading():
 	load_objects()
@@ -24,7 +32,6 @@ func finish_loading():
 		return
 	var player = get_tree().get_nodes_in_group("player")[0]
 	if teleport_group:
-		print(relativeVector)
 		var tele = get_tree().get_nodes_in_group(teleport_group)[0]
 		player.position = tele.position + tele.offset + relativeVector
 		

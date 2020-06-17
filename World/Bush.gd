@@ -14,6 +14,5 @@ func create_effect():
 func _on_HurtBox_area_entered(area):
 	create_effect()
 	SceneManager.delete(self)
-	$BlockingObject.end()
 	EventSystem.add_text("Why did you have to hurt me?\nI am only a bush.")
-	
+	$BlockingObject.end()

@@ -11,4 +11,3 @@ script = ExtResource( 1 )
 skew = 4.37114e-08
 shape = SubResource( 1 )
 [connection signal="body_entered" from="." to="." method="_on_Teleport_body_entered"]
-[connection signal="body_exited" from="." to="." method="_on_Teleport_body_exited"]
