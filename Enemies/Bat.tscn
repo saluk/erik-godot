@@ -103,7 +103,6 @@ script = ExtResource( 4 )
 material = SubResource( 1 )
 frames = SubResource( 7 )
 animation = "fly"
-frame = 1
 playing = true
 offset = Vector2( 0, -12 )
 
@@ -150,7 +149,6 @@ anims/Stop = SubResource( 14 )
 
 [node name="FollowingObject" parent="." instance=ExtResource( 11 )]
 [connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
-[connection signal="area_exited" from="HurtBox" to="." method="_on_HurtBox_area_exited"]
 [connection signal="invinsibility_ended" from="HurtBox" to="." method="_on_HurtBox_invinsibility_ended"]
 [connection signal="invinsibility_started" from="HurtBox" to="." method="_on_HurtBox_invinsibility_started"]
 [connection signal="no_health" from="Stats" to="." method="_on_Stats_no_health"]

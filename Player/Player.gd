@@ -26,6 +26,7 @@ var saveable = ["position", "stats.health",
 signal playerMoved
 
 func _ready():
+	blinkAnimPlayer.play("Stop")
 	stats.connect("no_health", self, "queue_free")
 	move_state(0.001, true)
 	animTree.active = true
@@ -46,6 +47,7 @@ func end_attack():
 func end_roll():
 	state = MOVE
 
+# warning-ignore:unused_argument
 func roll_state(delta: float):
 	animState.travel("Roll")
 	velocity = roll_vector * ROLL_SPEED
@@ -54,6 +56,7 @@ func roll_state(delta: float):
 		state = ATTACK
 	move()
 
+# warning-ignore:unused_argument
 func attack_state(delta: float):
 	animState.travel("Attack")
 	move()
@@ -100,6 +103,7 @@ func _on_HurtBox_area_entered(area):
 	hurtBox.create_hit_effect(0)
 	hurtBox.start_invincibility(1)
 	return
+# warning-ignore:unreachable_code
 	var audio = AudioStreamPlayer.new()
 	get_node("/root").add_child(audio)
 	audio.set("stream", load("res://Music and Sounds/Hurt.wav"))

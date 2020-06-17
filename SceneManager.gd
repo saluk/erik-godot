@@ -25,6 +25,8 @@ func _ready():
 		scenes[scene_name] = loaded
 	finish_loading()
 
+# warning-ignore:shadowed_variable
+# warning-ignore:shadowed_variable
 func change_scene(to_scene, teleport_group=null, 
 				  relativeVector=null):
 	current_scene = to_scene
@@ -33,8 +35,10 @@ func change_scene(to_scene, teleport_group=null,
 	self.relativeVector = relativeVector
 	save_objects()
 	if "res://" in to_scene:
+# warning-ignore:return_value_discarded
 		get_tree().change_scene(to_scene)
 	else:
+# warning-ignore:return_value_discarded
 		get_tree().change_scene_to(scenes[to_scene])
 
 func finish_loading():
@@ -47,7 +51,7 @@ func finish_loading():
 		player.position = tele.position + tele.offset + relativeVector
 		teleport_group = null
 	if player_from_file:
-		read_serial_ob(get_player(),player_from_file)
+		Serialization.read_serial_ob(get_player(),player_from_file)
 		player_from_file = null
 		
 func save_object_change(object, states):
@@ -74,7 +78,7 @@ func load_objects(tree=null):
 		if states.get("_delete", false):
 			object.queue_free()
 			continue
-		read_serial_ob(object, states)
+		Serialization.read_serial_ob(object, states)
 			
 func save_objects(tree=null, save_player=false):
 	var scene_name = get_tree().current_scene.filename
@@ -85,28 +89,7 @@ func save_objects(tree=null, save_player=false):
 			continue
 		save_objects(object)
 		var states = objectStates.get(scene_name,{}).get(object.name,{})
-		save_object_change(object, write_serial_ob(object, states))
-		
-func write_serial_ob(object, data=null):
-	if not data:
-		data = {}
-	var saveable = object.get("saveable")
-	if saveable:
-		for key in saveable:
-			var ob = object
-			for sub_ob in key.split("."):
-				ob = ob.get(sub_ob)
-			data[key] = ob
-	return data
-
-func read_serial_ob(object, data):
-	for key in data.keys():
-		var ob = object
-		var sub_obs = Array(key.split("."))
-		var sub_key = sub_obs.pop_back()
-		for sub_ob in sub_obs:
-			ob = ob.get(sub_ob)
-		ob.set(sub_key, data[key])
+		save_object_change(object, Serialization.write_serial_ob(object, states))
 		
 func delete(object):
 	self.save_object_change(object, {"_delete":true})
@@ -120,7 +103,7 @@ func _input(event):
 		var saved = {
 			'objectStates':objectStates,
 			'current_scene':current_scene,
-			'player':write_serial_ob(get_player())
+			'player':Serialization.write_serial_ob(get_player())
 		}
 		file.store_var(saved)
 		file.close()
