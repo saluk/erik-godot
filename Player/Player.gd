@@ -20,6 +20,9 @@ onready var hurtBox = $HurtBox
 onready var blinkAnimPlayer = $BlinkAnimationPlayer
 var hasAttacked:bool = false
 
+var saveable = ["position", "stats.health", 
+				"animTree.parameters/Idle/blend_position"]
+
 signal playerMoved
 
 func _ready():

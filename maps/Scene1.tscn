@@ -554,6 +554,7 @@ teleport_group = "tele_a"
 offset = Vector2( -48, 0 )
 
 [node name="Bat" parent="Objects" index="1" instance=ExtResource( 5 )]
+position = Vector2( 231, 22 )
 skew = 4.37114e-08
 
 [node name="Shrubs" type="YSort" parent="Objects" index="2" groups=[
@@ -565,13 +566,13 @@ skew = 4.37114e-08
 position = Vector2( 48, 16 )
 
 [node name="Bush2" parent="Objects/Shrubs" index="1" instance=ExtResource( 2 )]
-position = Vector2( 144, 40 )
+position = Vector2( 83, 53 )
 
 [node name="Bush3" parent="Objects/Shrubs" index="2" instance=ExtResource( 2 )]
-position = Vector2( 128, 48 )
+position = Vector2( 264, 11 )
 
 [node name="Bush4" parent="Objects/Shrubs" index="3" instance=ExtResource( 2 )]
-position = Vector2( 136, 56 )
+position = Vector2( 104, 15 )
 
 [node name="Bush5" parent="Objects/Shrubs" index="4" instance=ExtResource( 2 )]
 position = Vector2( 152, 56 )

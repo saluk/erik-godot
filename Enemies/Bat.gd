@@ -19,7 +19,7 @@ onready var pathFollower = $FollowingObject
 var target = null
 var path = []
 
-var saveable = ["position"]
+var saveable = ["position","stats.health"]
 
 enum {
 	IDLE,

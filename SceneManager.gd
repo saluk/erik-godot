@@ -1,17 +1,25 @@
 extends Node
-var old_position
 var teleport_group
 var relativeVector
 var in_process
+var player_from_file
 
 #scene_name->object_name->dictionary
 #saves object states that have changed
 #reapplies those states when scene loads
 var objectStates = {}
+var current_scene
 
 var scenes = {}
 
+func get_player():
+	var player = get_tree().get_nodes_in_group("player")
+	if player:
+		return player[0]
+	return null
+
 func _ready():
+	current_scene = get_tree().current_scene.filename
 	for scene_name in ["Scene1", "Scene2"]:
 		var loaded:Resource = load("res://maps/"+scene_name+".tscn")
 		scenes[scene_name] = loaded
@@ -19,23 +27,32 @@ func _ready():
 
 func change_scene(to_scene, teleport_group=null, 
 				  relativeVector=null):
-	old_position = get_tree().get_nodes_in_group("player")[0].position
+	current_scene = to_scene
 	in_process = true
 	self.teleport_group = teleport_group
 	self.relativeVector = relativeVector
 	save_objects()
-	get_tree().change_scene_to(scenes[to_scene])
+	if "res://" in to_scene:
+		get_tree().change_scene(to_scene)
+	else:
+		get_tree().change_scene_to(scenes[to_scene])
 
 func finish_loading():
 	load_objects()
 	if not in_process:
 		return
-	var player = get_tree().get_nodes_in_group("player")[0]
-	if teleport_group:
+	var player = get_player()
+	if teleport_group and player:
 		var tele = get_tree().get_nodes_in_group(teleport_group)[0]
 		player.position = tele.position + tele.offset + relativeVector
+		teleport_group = null
+	if player_from_file:
+		read_serial_ob(get_player(),player_from_file)
+		player_from_file = null
 		
 func save_object_change(object, states):
+	if not states:
+		return
 	var scene_name = get_tree().current_scene.filename
 	var ob_name = object.name
 	if not objectStates.has(scene_name):
@@ -57,22 +74,63 @@ func load_objects(tree=null):
 		if states.get("_delete", false):
 			object.queue_free()
 			continue
-		for key in states.keys():
-			object.set(key, states[key])
+		read_serial_ob(object, states)
 			
-func save_objects(tree=null):
+func save_objects(tree=null, save_player=false):
 	var scene_name = get_tree().current_scene.filename
 	if not tree:
 		tree = get_tree().current_scene
 	for object in tree.get_children():
+		if not save_player and object.name == 'Player':
+			continue
 		save_objects(object)
 		var states = objectStates.get(scene_name,{}).get(object.name,{})
-		var saveable = object.get("saveable")
-		if saveable:
-			for key in saveable:
-				states[key] = object.get(key)
-		save_object_change(object, states)
+		save_object_change(object, write_serial_ob(object, states))
+		
+func write_serial_ob(object, data=null):
+	if not data:
+		data = {}
+	var saveable = object.get("saveable")
+	if saveable:
+		for key in saveable:
+			var ob = object
+			for sub_ob in key.split("."):
+				ob = ob.get(sub_ob)
+			data[key] = ob
+	return data
+
+func read_serial_ob(object, data):
+	for key in data.keys():
+		var ob = object
+		var sub_obs = Array(key.split("."))
+		var sub_key = sub_obs.pop_back()
+		for sub_ob in sub_obs:
+			ob = ob.get(sub_ob)
+		ob.set(sub_key, data[key])
 		
 func delete(object):
 	self.save_object_change(object, {"_delete":true})
 	object.queue_free()
+
+func _input(event):
+	if event.is_action_pressed("quick_save_1") and get_player():
+		save_objects(null, true)
+		var file = File.new()
+		file.open("user://erik_1.sav",File.WRITE)
+		var saved = {
+			'objectStates':objectStates,
+			'current_scene':current_scene,
+			'player':write_serial_ob(get_player())
+		}
+		file.store_var(saved)
+		file.close()
+	elif event.is_action_pressed("quick_load_1"):
+		var file = File.new()
+		file.open("user://erik_1.sav",File.READ)
+		var saved = file.get_var()
+		file.close()
+		print(saved)
+		objectStates = saved['objectStates']
+		player_from_file = saved['player']
+		load_objects()
+		change_scene(saved['current_scene'])
