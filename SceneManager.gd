@@ -11,18 +11,28 @@ var objectStates = {}
 var current_scene
 
 var scenes = {}
+var doors = []
 
 func get_player():
 	var player = get_tree().get_nodes_in_group("player")
 	if player:
 		return player[0]
 	return null
+	
+func filename_to_scenename(filename:String):
+	var lastpath = filename.split('/')[-1]
+	return lastpath.split(".")[0]
 
 func _ready():
 	current_scene = get_tree().current_scene.filename
 	for scene_name in ["Scene1", "Scene2"]:
 		var loaded:Resource = load("res://maps/"+scene_name+".tscn")
 		scenes[scene_name] = loaded
+		var expensive:Node = loaded.instance()
+		for teleport in Nodes.find_nodes_in_group(expensive, 'teleport'):
+			doors.append([filename_to_scenename(expensive.filename),
+						teleport.to_scene])
+		expensive.free()
 	finish_loading()
 
 # warning-ignore:shadowed_variable

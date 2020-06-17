@@ -548,6 +548,7 @@ skew = 4.37114e-08
 
 [node name="Teleport" parent="Objects" index="0" groups=[
 "tele_a",
+"teleport",
 ] instance=ExtResource( 8 )]
 position = Vector2( -63, 80 )
 skew = 4.37114e-08
