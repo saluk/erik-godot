@@ -830,6 +830,7 @@ stream = ExtResource( 8 )
 [node name="BlinkAnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Start = SubResource( 49 )
 anims/Stop = SubResource( 50 )
+[connection signal="collect_item" from="Position2D/SwordHitBox" to="." method="_on_SwordHitBox_collect_item"]
 [connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
 [connection signal="invinsibility_ended" from="HurtBox" to="." method="_on_HurtBox_invinsibility_ended"]
 [connection signal="invinsibility_started" from="HurtBox" to="." method="_on_HurtBox_invinsibility_started"]

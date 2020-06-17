@@ -116,4 +116,5 @@ func _input(event):
 		objectStates = saved['objectStates']
 		player_from_file = saved['player']
 		load_objects()
+		Serialization.read_serial_ob(get_player(), player_from_file)
 		change_scene(saved['current_scene'])

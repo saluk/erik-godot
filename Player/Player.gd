@@ -21,7 +21,8 @@ onready var blinkAnimPlayer = $BlinkAnimationPlayer
 var hasAttacked:bool = false
 
 var saveable = ["position", "stats.health", 
-				"animTree.parameters/Idle/blend_position"]
+				"animTree.parameters/Idle/blend_position",
+				"stats.items"]
 
 signal playerMoved
 
@@ -118,3 +119,7 @@ func _on_HurtBox_invinsibility_started():
 
 func _on_HurtBox_invinsibility_ended():
 	blinkAnimPlayer.play("Stop")
+
+
+func _on_SwordHitBox_collect_item(itemName):
+	stats.add_item(itemName)

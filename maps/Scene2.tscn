@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=2]
+[gd_scene load_steps=61 format=2]
 
 [ext_resource path="res://MapScene.tscn" type="PackedScene" id=1]
 [ext_resource path="res://World/Bush.tscn" type="PackedScene" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://World/Grass.tscn" type="PackedScene" id=6]
 [ext_resource path="res://World/CliffTileset.png" type="Texture" id=7]
 [ext_resource path="res://World/teleport.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Objects/Carrot.tscn" type="PackedScene" id=9]
 [ext_resource path="res://World/Tree.tscn" type="PackedScene" id=11]
 
 [sub_resource type="TileSet" id=1]
@@ -541,11 +542,24 @@ tile_data = PoolIntArray( -196605, 0, 0, -196604, 0, 5, -196603, 0, 196609, -196
 [node name="Camera2D" parent="." index="2"]
 position = Vector2( 79, 129 )
 
-[node name="Bat" parent="Objects" index="0" instance=ExtResource( 5 )]
+[node name="Carrot" parent="." index="3" instance=ExtResource( 9 )]
+position = Vector2( 109, 181 )
+skew = 4.37114e-08
+
+[node name="Teleport" parent="Objects" index="0" groups=[
+"tele_a",
+] instance=ExtResource( 8 )]
+position = Vector2( -63, 80 )
+skew = 4.37114e-08
+to_scene = "Scene1"
+teleport_group = "tele_a"
+offset = Vector2( 48, 0 )
+
+[node name="Bat" parent="Objects" index="1" instance=ExtResource( 5 )]
 position = Vector2( 280, -15 )
 skew = 4.37114e-08
 
-[node name="Shrubs" type="YSort" parent="Objects" index="1" groups=[
+[node name="Shrubs" type="YSort" parent="Objects" index="2" groups=[
 "collide_block_object",
 ]]
 skew = 4.37114e-08
@@ -553,7 +567,7 @@ skew = 4.37114e-08
 [node name="Bush" parent="Objects/Shrubs" index="0" instance=ExtResource( 2 )]
 position = Vector2( 48, 16 )
 
-[node name="Grass" type="YSort" parent="Objects" index="2"]
+[node name="Grass" type="YSort" parent="Objects" index="3"]
 skew = 4.37114e-08
 sort_enabled = false
 
@@ -566,7 +580,7 @@ position = Vector2( 176, 72 )
 [node name="Grass3" parent="Objects/Grass" index="2" instance=ExtResource( 6 )]
 position = Vector2( 192, 104 )
 
-[node name="Trees" type="YSort" parent="Objects" index="3" groups=[
+[node name="Trees" type="YSort" parent="Objects" index="4" groups=[
 "collide_block_object",
 ]]
 skew = 4.37114e-08
@@ -574,13 +588,5 @@ skew = 4.37114e-08
 [node name="Tree" parent="Objects/Trees" index="0" instance=ExtResource( 11 )]
 position = Vector2( 168, -48 )
 
-[node name="Player" parent="Objects" index="4"]
+[node name="Player" parent="Objects" index="5"]
 position = Vector2( 79, 129 )
-
-[node name="Teleport" parent="." index="5" groups=[
-"tele_a",
-] instance=ExtResource( 8 )]
-position = Vector2( -63, 80 )
-to_scene = "Scene1"
-teleport_group = "tele_a"
-offset = Vector2( 48, 0 )
