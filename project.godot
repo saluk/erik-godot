@@ -18,10 +18,16 @@ _global_script_classes=[ {
 "class": "Serialization",
 "language": "GDScript",
 "path": "res://serialization.gd"
+}, {
+"base": "Node",
+"class": "Vectors",
+"language": "GDScript",
+"path": "res://vectors.gd"
 } ]
 _global_script_class_icons={
 "Nodes": "",
-"Serialization": ""
+"Serialization": "",
+"Vectors": ""
 }
 
 [application]

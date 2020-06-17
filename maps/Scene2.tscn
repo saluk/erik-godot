@@ -513,6 +513,7 @@ points = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
 [node name="Grass" type="TileMap" parent="TileMaps" index="0" groups=[
 "collide_walk",
 ]]
+position = Vector2( 48, 96 )
 skew = 4.37114e-08
 tile_set = SubResource( 1 )
 cell_size = Vector2( 16, 16 )
@@ -522,6 +523,7 @@ tile_data = PoolIntArray( -393219, 0, 0, -393218, 0, 0, -393217, 0, 0, -458752, 
 [node name="DirtPath" type="TileMap" parent="TileMaps" index="1" groups=[
 "collide_walk",
 ]]
+position = Vector2( 48, 96 )
 skew = 4.37114e-08
 tile_set = SubResource( 2 )
 cell_size = Vector2( 16, 16 )
@@ -532,6 +534,7 @@ tile_data = PoolIntArray( -196597, 0, 0, -196596, 0, 2, -131062, 0, 0, -131061, 
 [node name="DirtCliff" type="TileMap" parent="TileMaps" index="2" groups=[
 "collide_block_tile",
 ]]
+position = Vector2( 64, 96 )
 skew = 4.37114e-08
 tile_set = SubResource( 50 )
 cell_size = Vector2( 32, 32 )
@@ -540,24 +543,23 @@ format = 1
 tile_data = PoolIntArray( -196605, 0, 0, -196604, 0, 5, -196603, 0, 196609, -196602, 0, 196610, -131070, 0, 0, -131069, 0, 131078, -131068, 0, 65538, -65534, 0, 65536, -65533, 0, 65537, -65532, 0, 65538, 65534, 0, 0, 65535, 0, 1, 0, 0, 1, 1, 0, 1, 2, 0, 131078, 3, 0, 65537, 4, 0, 65538, 131070, 0, 131072, 131071, 0, 131073, 65536, 0, 131073, 65537, 0, 131073, 65538, 0, 65542, 65539, 0, 65537, 65540, 0, 65538, 131074, 0, 131072, 131075, 0, 131073, 131076, 0, 131074, 262142, 0, 0, 262143, 0, 1, 196608, 0, 2, 327677, 0, 0, 327678, 0, 131078, 327679, 0, 65537, 262144, 0, 65538, 393213, 0, 65536, 393214, 0, 65537, 393215, 0, 65541, 327680, 0, 131074, 458749, 0, 65536, 458750, 0, 65537, 458751, 0, 65538, 393224, 0, 0, 393225, 0, 2, 524285, 0, 131072, 524286, 0, 65542, 524287, 0, 65538, 458760, 0, 65536, 458761, 0, 65538, 589822, 0, 131072, 589823, 0, 9, 524288, 0, 2, 524294, 0, 0, 524295, 0, 1, 524296, 0, 65545, 524297, 0, 131074, 655359, 0, 65536, 589824, 0, 65538, 589828, 0, 0, 589829, 0, 1, 589830, 0, 131078, 589831, 0, 65541, 589832, 0, 131074, 720895, 0, 131072, 655360, 0, 196613, 655361, 0, 196609, 655362, 0, 196609, 655363, 0, 6, 655364, 0, 131078, 655365, 0, 65541, 655366, 0, 131073, 655367, 0, 131074, 720899, 0, 131072, 720900, 0, 131073, 720901, 0, 131074 )
 
 [node name="Camera2D" parent="." index="2"]
-position = Vector2( 79, 129 )
+position = Vector2( 64, 48 )
 
 [node name="Carrot" parent="." index="3" instance=ExtResource( 9 )]
-position = Vector2( 109, 181 )
+position = Vector2( 109, 277 )
 skew = 4.37114e-08
 
 [node name="Teleport" parent="Objects" index="0" groups=[
 "tele_a",
-"teleport",
 ] instance=ExtResource( 8 )]
-position = Vector2( -63, 80 )
+position = Vector2( -16, 176 )
 skew = 4.37114e-08
 to_scene = "Scene1"
 teleport_group = "tele_a"
 offset = Vector2( 48, 0 )
 
 [node name="Bat" parent="Objects" index="1" instance=ExtResource( 5 )]
-position = Vector2( 280, -15 )
+position = Vector2( 280, 81 )
 skew = 4.37114e-08
 
 [node name="Shrubs" type="YSort" parent="Objects" index="2" groups=[
@@ -566,20 +568,20 @@ skew = 4.37114e-08
 skew = 4.37114e-08
 
 [node name="Bush" parent="Objects/Shrubs" index="0" instance=ExtResource( 2 )]
-position = Vector2( 48, 16 )
+position = Vector2( 104, 40 )
 
 [node name="Grass" type="YSort" parent="Objects" index="3"]
 skew = 4.37114e-08
 sort_enabled = false
 
 [node name="Grass" parent="Objects/Grass" index="0" instance=ExtResource( 6 )]
-position = Vector2( 168, 112 )
+position = Vector2( 248, 232 )
 
 [node name="Grass2" parent="Objects/Grass" index="1" instance=ExtResource( 6 )]
-position = Vector2( 176, 72 )
+position = Vector2( 256, 192 )
 
 [node name="Grass3" parent="Objects/Grass" index="2" instance=ExtResource( 6 )]
-position = Vector2( 192, 104 )
+position = Vector2( 272, 224 )
 
 [node name="Trees" type="YSort" parent="Objects" index="4" groups=[
 "collide_block_object",
@@ -587,7 +589,7 @@ position = Vector2( 192, 104 )
 skew = 4.37114e-08
 
 [node name="Tree" parent="Objects/Trees" index="0" instance=ExtResource( 11 )]
-position = Vector2( 168, -48 )
+position = Vector2( 168, 48 )
 
 [node name="Player" parent="Objects" index="5"]
-position = Vector2( 79, 129 )
+position = Vector2( 64, 48 )

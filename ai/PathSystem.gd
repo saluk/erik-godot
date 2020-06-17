@@ -63,27 +63,44 @@ func find_world_path(start:Vector2, end:Vector2):
 	)
 	
 func debug_astar():
+	var debugPoint = Node2D.new()
 	if debugPoints:
+		debugPoint.set_script(load("res://UI/debuglines.gd"))
+		debugPoint.width = 2
+		var linePoints = []
+		var colors = []
 		for p in _astar_map.get_points():
 			var position = _astar_map.get_point_position(p)
-			var debugPoint = Line2D.new()
-			debugPoint.width = 2
-			debugPoint.points = PoolVector2Array([position*16, 
-												position*16+Vector2(2,0)])
+			linePoints.append(position*16)
+			linePoints.append(position*16+Vector2(2,0))
 			if _astar_map.is_point_disabled(p):
-				debugPoint.default_color = Color(1, 0, 0)
-			debugLines.add_child(debugPoint)
+				colors.append(Color(1,0,0))
+			else:
+				colors.append(Color(0,0,0))
+		debugPoint.points = PoolVector2Array(linePoints)
+		debugPoint.colors = PoolColorArray(colors)
+		debugLines.add_child(debugPoint)
 	if debugConnections:
+		debugPoint = Node2D.new()
+		debugPoint.set_script(load("res://UI/debuglines.gd"))
+		debugPoint.width = 1
+		var linePoints = []
+		var colors = []
 		for p in _astar_map.get_points():
 			for c in _astar_map.get_point_connections(p):
 				var startPos = _astar_map.get_point_position(p)
 				var endPos = _astar_map.get_point_position(c)
-				var debugPoint = Line2D.new()
-				debugPoint.width = 1
-				debugPoint.points = PoolVector2Array([startPos*16, 
-													endPos*16])
-				debugPoint.default_color = Color(0, 0, 0)
-				debugLines.add_child(debugPoint)
+				linePoints.append(startPos*16)
+				linePoints.append(endPos*16)
+				colors.append(Color(0, 0, 0))
+		debugPoint.points = PoolVector2Array(linePoints)
+		debugPoint.colors = PoolColorArray(colors)
+		debugLines.add_child(debugPoint)
+		
+func tx_offset(ob, tx):
+	return tx-int(ob.global_position.x/ob.cell_size.x)
+func ty_offset(ob, ty):
+	return ty-int(ob.global_position.y/ob.cell_size.y)
 		
 func add_walkable_areas():
 	for ob in get_tree().get_nodes_in_group("collide_walk"):
@@ -91,7 +108,8 @@ func add_walkable_areas():
 			root_map = ob
 		for tx in range(tileBounds.position.x, tileBounds.size.x-tileBounds.position.x):
 			for ty in range(tileBounds.position.y, tileBounds.size.y-tileBounds.position.y):
-				if ob.get_cell(tx, ty) != TileMap.INVALID_CELL:
+				print(tx_offset(ob, tx))
+				if ob.get_cell(tx_offset(ob, tx), tx_offset(ob, ty)) != TileMap.INVALID_CELL:
 					_add_cells(Vector2(tx, ty), ob.cell_size, true)
 				elif ob == root_map:
 					_add_cells(Vector2(tx, ty), ob.cell_size, false)
@@ -99,7 +117,10 @@ func add_walkable_areas():
 func add_collision_areas():
 	for ob in get_tree().get_nodes_in_group("collide_block_tile"):
 		for tile_pos in ob.get_used_cells():
-			_add_cells(tile_pos, ob.cell_size, false)
+			print(tile_pos)
+			var tx = tile_pos.x + int(ob.global_position.x/ob.cell_size.x)
+			var ty = tile_pos.y + int(ob.global_position.y/ob.cell_size.y)
+			_add_cells(Vector2(tx, ty), ob.cell_size, false)
 	for ob in get_tree().get_nodes_in_group("collide_object"):
 		if ob.is_queued_for_deletion():
 			continue
@@ -114,7 +135,14 @@ func add_collision_areas():
 		_add_cells(to_map(pos+Vector2(0,shape.shape.height)), tileResolution, false)
 		
 func to_map(pos:Vector2):
-	return Vector2(int(pos.x/tileResolution.x), int(pos.y/tileResolution.y))
+	var potential = [Vector2(int(pos.x/tileResolution.x), int(pos.y/tileResolution.y))]
+	potential.append(potential[0]+Vector2(-1,0))
+	potential.append(potential[0]+Vector2(1,0))
+	potential.append(potential[0]+Vector2(0,1))
+	potential.append(potential[0]+Vector2(0,-1))
+	potential.append(potential[0]+Vector2(-1,-1))
+	potential.append(potential[0]+Vector2(1,1))
+	return Vectors.get_nearest(pos, potential)
 		
 func _add_cells(point:Vector2, cellSize:Vector2, enabled:bool):
 	var stepx:int = cellSize.x/tileResolution.x
