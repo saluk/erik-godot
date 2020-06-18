@@ -25,15 +25,27 @@ func filename_to_scenename(filename:String):
 
 func _ready():
 	current_scene = get_tree().current_scene.filename
+	self.call_deferred("init_universe")
+	
+func init_universe():
 	for scene_name in ["Scene1", "Scene2"]:
-		var loaded:Resource = load("res://maps/"+scene_name+".tscn")
-		scenes[scene_name] = loaded
-		var expensive:Node = loaded.instance()
-		for teleport in Nodes.find_nodes_in_group(expensive, 'teleport'):
-			doors.append([filename_to_scenename(expensive.filename),
-						teleport.to_scene])
-		expensive.free()
+		print("Loading...", scene_name)
+		var loaded_resource = load("res://maps/"+scene_name+".tscn")
+		scenes[scene_name] = {"scene":loaded_resource}
+		var loaded_scene = loaded_resource.instance()
+		get_tree().get_root().add_child(loaded_scene)
+		add_metadata(loaded_scene, scene_name)
+	print("finish_loading universe")
 	finish_loading()
+	
+func add_metadata(loaded_scene, scene_name):
+	for teleport in Nodes.find_nodes_in_group(loaded_scene, 'teleport'):
+		doors.append([filename_to_scenename(loaded_scene.filename),
+					teleport.to_scene])
+	scenes[scene_name]["astar_map"] = loaded_scene.get_node("PathSystem")._astar_map
+	get_tree().get_root().remove_child(loaded_scene)
+	print("finish loading ",scene_name)
+	print(scenes[scene_name]["astar_map"])
 
 # warning-ignore:shadowed_variable
 # warning-ignore:shadowed_variable
@@ -49,7 +61,7 @@ func change_scene(to_scene, teleport_group=null,
 		get_tree().change_scene(to_scene)
 	else:
 # warning-ignore:return_value_discarded
-		get_tree().change_scene_to(scenes[to_scene])
+		get_tree().change_scene_to(scenes[to_scene]["scene"])
 
 func finish_loading():
 	load_objects()

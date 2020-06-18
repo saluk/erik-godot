@@ -12,17 +12,17 @@ _global_script_classes=[ {
 "base": "Node",
 "class": "Nodes",
 "language": "GDScript",
-"path": "res://nodes.gd"
+"path": "res://Libraries/nodes.gd"
 }, {
 "base": "Node",
 "class": "Serialization",
 "language": "GDScript",
-"path": "res://serialization.gd"
+"path": "res://Libraries/serialization.gd"
 }, {
 "base": "Node",
 "class": "Vectors",
 "language": "GDScript",
-"path": "res://vectors.gd"
+"path": "res://Libraries/vectors.gd"
 } ]
 _global_script_class_icons={
 "Nodes": "",
@@ -42,9 +42,9 @@ default_bus_layout="res://Music and Sounds/audiobuslayout.tres"
 
 [autoload]
 
+EventSystem="*res://Libraries/EventSystem.gd"
+SceneManager="*res://Libraries/SceneManager.gd"
 PlayerStats="*res://Player/PlayerStats.tscn"
-EventSystem="*res://EventSystem.gd"
-SceneManager="*res://SceneManager.gd"
 
 [display]
 

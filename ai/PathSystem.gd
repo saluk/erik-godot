@@ -108,7 +108,6 @@ func add_walkable_areas():
 			root_map = ob
 		for tx in range(tileBounds.position.x, tileBounds.size.x-tileBounds.position.x):
 			for ty in range(tileBounds.position.y, tileBounds.size.y-tileBounds.position.y):
-				print(tx_offset(ob, tx))
 				if ob.get_cell(tx_offset(ob, tx), tx_offset(ob, ty)) != TileMap.INVALID_CELL:
 					_add_cells(Vector2(tx, ty), ob.cell_size, true)
 				elif ob == root_map:
@@ -117,7 +116,6 @@ func add_walkable_areas():
 func add_collision_areas():
 	for ob in get_tree().get_nodes_in_group("collide_block_tile"):
 		for tile_pos in ob.get_used_cells():
-			print(tile_pos)
 			var tx = tile_pos.x + int(ob.global_position.x/ob.cell_size.x)
 			var ty = tile_pos.y + int(ob.global_position.y/ob.cell_size.y)
 			_add_cells(Vector2(tx, ty), ob.cell_size, false)
