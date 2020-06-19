@@ -10,9 +10,37 @@ var ui_scene = load("res://UI/UI.tscn")
 #saves object states that have changed
 #reapplies those states when scene loads
 var objectStates = {}
+var agents = {}
 var current_scene
 
 var scenes = {}
+
+func add_agent(node, scene_name) -> String:
+	var agent = OffscreenAgent.new()
+	agent.update(node, scene_name)
+	agents[agent.id] = agent
+	return agent
+func get_agent_key(node, scene_name):
+	return agents.get(OffscreenAgent.make_key(node, scene_name), null)
+func change_agent_scene(id, scene_name, teleport_group):
+	var agent = agents[id]
+	agent.scene_name = scene_name
+	if scene_name != current_scene:
+		print("Moved to another offloaded scene")
+		return
+	print("instancing", agent)
+	var node = load(agent.instance_type).instance()
+	node.agent_key = agent.id
+	var tele = get_tree().get_nodes_in_group(teleport_group)[0]
+	node.position = tele.position + tele.offset
+	node.state = node.CHASE
+	node.get_node("PlayerDetectionZone/CollisionShape2D").shape.radius = 168
+	get_tree().current_scene.get_node('Objects').add_child(node)
+	
+func _process(_delta):
+	for agent in agents.values():
+		if agent.scene_name != current_scene:
+			agent._process(_delta)
 
 func get_player():
 	var player = get_tree().get_nodes_in_group("player")
@@ -42,11 +70,8 @@ func init_universe():
 	print("finish_loading universe")
 	change_scene(current_scene)
 	
-func add_metadata(loaded_scene, scene_name):
-	for teleport in Nodes.find_nodes_in_group(loaded_scene, 'teleport'):
-		scenes[scene_name]['doors'] = scenes[scene_name].get('doors', [])
-		scenes[scene_name]['doors'].append(teleport.to_scene)
-	#scenes[scene_name]["astar_map"] = loaded_scene.get_node("PathSystem")._astar_map
+func add_metadata(loaded_scene:Node, scene_name:String):
+	loaded_scene.propagate_call("add_metadata", [self, scene_name])
 	get_tree().get_root().remove_child(loaded_scene)
 	print("finish loading ",scene_name)
 	print(scenes[scene_name])
@@ -60,11 +85,11 @@ func get_metadata():
 # warning-ignore:shadowed_variable
 func change_scene(to_scene, teleport_group=null, 
 				  relativeVector=null):
-	current_scene = to_scene
 	in_process = true
 	self.teleport_group = teleport_group
 	self.relativeVector = relativeVector
 	save_objects()
+	current_scene = to_scene
 	if "res://" in to_scene:
 # warning-ignore:return_value_discarded
 		get_tree().change_scene(to_scene)
@@ -104,6 +129,7 @@ func load_objects(tree=null):
 	var scene_name = get_tree().current_scene.filename
 	if not tree:
 		tree = get_tree().current_scene
+		tree.propagate_call("loadinit", [self])
 	for object in tree.get_children():
 		load_objects(object)
 		var states = objectStates.get(scene_name,{}).get(object.name,{})
@@ -116,6 +142,7 @@ func save_objects(tree=null, save_player=false):
 	var scene_name = get_tree().current_scene.filename
 	if not tree:
 		tree = get_tree().current_scene
+		tree.propagate_call("unload", [self])
 	for object in tree.get_children():
 		if not save_player and object.name == 'Player':
 			continue

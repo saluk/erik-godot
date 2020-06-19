@@ -12,7 +12,6 @@
 [ext_resource path="res://WhiteColor.shader" type="Shader" id=10]
 [ext_resource path="res://ai/FollowingObject.tscn" type="PackedScene" id=11]
 
-
 [sub_resource type="ShaderMaterial" id=1]
 resource_local_to_scene = true
 shader = ExtResource( 10 )
@@ -47,7 +46,6 @@ animations = [ {
 } ]
 
 [sub_resource type="CircleShape2D" id=8]
-radius = 4.0
 
 [sub_resource type="CapsuleShape2D" id=9]
 radius = 7.0
@@ -55,7 +53,7 @@ height = 4.0
 
 [sub_resource type="CircleShape2D" id=10]
 resource_local_to_scene = true
-radius = 40.1123
+radius = 40.0
 
 [sub_resource type="CircleShape2D" id=11]
 radius = 4.0
@@ -104,6 +102,7 @@ script = ExtResource( 4 )
 material = SubResource( 1 )
 frames = SubResource( 7 )
 animation = "fly"
+frame = 3
 playing = true
 offset = Vector2( 0, -12 )
 

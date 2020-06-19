@@ -19,7 +19,24 @@ onready var pathFollower = $FollowingObject
 var target = null
 var path = []
 
-var saveable = ["position","stats.health"]
+var saveable = ["position","stats.health","agent_key","state"]
+var offscreen_class = OffscreenAgent
+
+var agent_key
+func add_metadata(manager:SceneManager, scene_name):
+	if not agent_key:
+		var agent = manager.add_agent(self, scene_name)
+		agent_key = agent.id
+func loadinit(manager:SceneManager):
+	var agent = manager.get_agent_key(self, manager.current_scene)
+	if agent:
+		agent_key = agent.id
+	print("load bat")
+func unload(manager:SceneManager):
+	if agent_key:
+		if state == CHASE and target:
+			manager.agents[agent_key].task = "chase"
+	print("unloading bat", name, manager.current_scene, agent_key)
 
 enum {
 	IDLE,

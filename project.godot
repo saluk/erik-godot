@@ -15,6 +15,11 @@ _global_script_classes=[ {
 "path": "res://Libraries/nodes.gd"
 }, {
 "base": "Node",
+"class": "OffscreenAgent",
+"language": "GDScript",
+"path": "res://ai/offscreen_agent.gd"
+}, {
+"base": "Node",
 "class": "Serialization",
 "language": "GDScript",
 "path": "res://Libraries/serialization.gd"
@@ -26,6 +31,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "Nodes": "",
+"OffscreenAgent": "",
 "Serialization": "",
 "Vectors": ""
 }
