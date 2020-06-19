@@ -5,7 +5,7 @@ onready var panelText = $Panel/Text
 var lines:Array = []
 
 func _ready():
-	var x = EventSystem.connect("add_event_text", self, "set_text")
+	EventSystem.connect("add_event_text", self, "set_text")
 
 func _input(event):
 	if not panel.visible:

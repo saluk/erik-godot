@@ -7,12 +7,18 @@ export var debugPath:bool
 export var debugPoints:bool
 export var debugConnections:bool
 
-
-var _astar_map:AStar2D = AStar2D.new()
+var astar_map setget set_astar_map, get_astar_map
 var root_map:TileMap = null
 var last_astar_index:int = 0
 onready var debugLines = $DebugLines
-var startPos = Vector2(7,6)
+
+func get_astar_map():
+	var meta = SceneManager.get_metadata()
+	if not meta.has("astar_map"):
+		return AStar2D.new()
+	return meta["astar_map"]
+func set_astar_map(map):
+	pass
 
 func _get_configuration_warning():
 	if get_tree().get_nodes_in_group("collide_walk").size()==0:
@@ -26,7 +32,7 @@ func init():
 	update_astar()
 	
 func update_astar():
-	_astar_map.clear()
+	self.astar_map.clear()
 	add_walkable_areas()
 	add_collision_areas()
 	link_grid()
@@ -43,7 +49,9 @@ func update_debug():
 	debug_astar()
 	
 func find_path(start:Vector2, end:Vector2):
-	var points = _astar_map.get_point_path(_astar_map.get_closest_point(start), 
+	var _astar_map = self.astar_map
+	var points = _astar_map.get_point_path(
+		_astar_map.get_closest_point(start), 
 		_astar_map.get_closest_point(end))
 	var pointsAdjust = []
 	for p in points:
@@ -63,6 +71,7 @@ func find_world_path(start:Vector2, end:Vector2):
 	)
 	
 func debug_astar():
+	var _astar_map = self.astar_map
 	var debugPoint = Node2D.new()
 	if debugPoints:
 		debugPoint.set_script(load("res://UI/debuglines.gd"))
@@ -150,6 +159,7 @@ func _add_cells(point:Vector2, cellSize:Vector2, enabled:bool):
 			_add_point(point*Vector2(stepx,stepy)+Vector2(tx,ty), enabled)
 
 func link_grid(diagonals:bool=false):
+	var _astar_map = self.astar_map
 	for idx in _astar_map.get_points():
 		var position:Vector2 = _astar_map.get_point_position(idx)
 		for x in range(-1,2):
@@ -161,6 +171,7 @@ func link_grid(diagonals:bool=false):
 				link_points(idx, position+Vector2(x,y))
 
 func link_points(idx:int, point:Vector2):
+	var _astar_map = self.astar_map
 	var linkIdx:int = _astar_map.get_closest_point(point, true)
 	var linkPosition:Vector2 = _astar_map.get_point_position(linkIdx)
 	if linkPosition != point:
@@ -168,6 +179,7 @@ func link_points(idx:int, point:Vector2):
 	_astar_map.connect_points(idx, linkIdx, true)
 			
 func _add_point(point:Vector2, enabled:bool):
+	var _astar_map = self.astar_map
 	var idx:int = _astar_map.get_closest_point(point, true)
 	var position:Vector2
 	if idx<0:
@@ -182,6 +194,7 @@ func _add_point(point:Vector2, enabled:bool):
 		toggle_point_enabled(point, enabled)
 
 func toggle_point_enabled(point:Vector2, enabled:bool):
+	var _astar_map = self.astar_map
 	var idx:int = _astar_map.get_closest_point(point, true)
 	_astar_map.set_point_disabled(idx, not enabled)
 

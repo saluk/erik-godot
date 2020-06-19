@@ -4,6 +4,8 @@ var relativeVector
 var in_process
 var player_from_file
 
+var ui_scene = load("res://UI/UI.tscn")
+
 #scene_name->object_name->dictionary
 #saves object states that have changed
 #reapplies those states when scene loads
@@ -11,7 +13,6 @@ var objectStates = {}
 var current_scene
 
 var scenes = {}
-var doors = []
 
 func get_player():
 	var player = get_tree().get_nodes_in_group("player")
@@ -24,28 +25,36 @@ func filename_to_scenename(filename:String):
 	return lastpath.split(".")[0]
 
 func _ready():
-	current_scene = get_tree().current_scene.filename
+	current_scene = filename_to_scenename(get_tree().current_scene.filename)
 	self.call_deferred("init_universe")
 	
 func init_universe():
 	for scene_name in ["Scene1", "Scene2"]:
 		print("Loading...", scene_name)
 		var loaded_resource = load("res://maps/"+scene_name+".tscn")
-		scenes[scene_name] = {"scene":loaded_resource}
+		scenes[scene_name] = {
+			"scene":loaded_resource,
+			"astar_map": AStar2D.new()
+		}
 		var loaded_scene = loaded_resource.instance()
 		get_tree().get_root().add_child(loaded_scene)
 		add_metadata(loaded_scene, scene_name)
 	print("finish_loading universe")
-	finish_loading()
+	change_scene(current_scene)
 	
 func add_metadata(loaded_scene, scene_name):
 	for teleport in Nodes.find_nodes_in_group(loaded_scene, 'teleport'):
-		doors.append([filename_to_scenename(loaded_scene.filename),
-					teleport.to_scene])
-	scenes[scene_name]["astar_map"] = loaded_scene.get_node("PathSystem")._astar_map
+		scenes[scene_name]['doors'] = scenes[scene_name].get('doors', [])
+		scenes[scene_name]['doors'].append(teleport.to_scene)
+	#scenes[scene_name]["astar_map"] = loaded_scene.get_node("PathSystem")._astar_map
 	get_tree().get_root().remove_child(loaded_scene)
 	print("finish loading ",scene_name)
-	print(scenes[scene_name]["astar_map"])
+	print(scenes[scene_name])
+	
+func get_metadata():
+	if not scenes.has(current_scene):
+		return {}
+	return scenes[current_scene]
 
 # warning-ignore:shadowed_variable
 # warning-ignore:shadowed_variable
@@ -63,8 +72,9 @@ func change_scene(to_scene, teleport_group=null,
 # warning-ignore:return_value_discarded
 		get_tree().change_scene_to(scenes[to_scene]["scene"])
 
-func finish_loading():
+func finish_loading(scene):
 	load_objects()
+	scene.add_child(ui_scene.instance())
 	if not in_process:
 		return
 	var player = get_player()

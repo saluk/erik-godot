@@ -567,7 +567,7 @@ skew = 4.37114e-08
 
 [node name="BatSprite" parent="YSort/Bat" index="0"]
 material = SubResource( 51 )
-frame = 4
+frame = 3
 
 [node name="CollisionShape2D" parent="YSort/Bat/PlayerDetectionZone" index="0"]
 shape = SubResource( 52 )
