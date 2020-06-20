@@ -4,9 +4,12 @@ class_name OffscreenAgent
 var id:String
 var task:String = "idle"
 var position:Vector2 = Vector2(0,0)
+var data:Dictionary = {}
 var scene_name:String = ""
 var speed = 64
 var instance_type = ""
+
+var saveable = ["id", "task", "position", "data", "scene_name", "speed", "instance_type"]
 
 static func make_key(node, scene_name):
 	return node.name+":"+scene_name
@@ -17,7 +20,9 @@ func update(node:Node, scene_name, task='idle'):
 	self.task = task
 	self.position = node.position
 	self.instance_type = node.filename
-	id = make_key(node, scene_name)
+	self.data = Serialization.write_serial_ob(node)
+	if id.empty():
+		id = make_key(node, scene_name)
 
 func _process(delta):
 	match task:
@@ -29,9 +34,14 @@ func _process(delta):
 			pass
 			
 func get_scene_meta():
+	print("get meta:",scene_name)
 	return SceneManager.scenes[scene_name]
 
-func find_path(_astar_map, start:Vector2, end:Vector2):
+func find_path(_astar_map:AStar2D, start:Vector2, end:Vector2):
+	print("map:",_astar_map," start:",start," end:",end)
+	print(_astar_map.get_points())
+	print(_astar_map.get_closest_point(start))
+	print(_astar_map.get_closest_point(end))
 	var points = _astar_map.get_point_path(
 		_astar_map.get_closest_point(start), 
 		_astar_map.get_closest_point(end))
@@ -74,7 +84,7 @@ func chase_action(delta):
 	var meta = get_scene_meta()
 	var astar = meta['astar_map']
 	var player = SceneManager.get_player()
-	for door in meta['doors']:
+	for door in meta.get('doors', []):
 		if door[0] == SceneManager.current_scene:
 			if follow_path(astar, delta, door[1]):
 				print("reached exit")

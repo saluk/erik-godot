@@ -34,8 +34,13 @@ func loadinit(manager:SceneManager):
 	print("load bat")
 func unload(manager:SceneManager):
 	if agent_key:
+		var task = 'idle'
 		if state == CHASE and target:
-			manager.agents[agent_key].task = "chase"
+			task = 'chase'
+		if manager.agents.get(agent_key):
+			manager.agents[agent_key].update(self, manager.current_scene, task)
+		#DONT track with normal scene manager
+		SceneManager.delete(self, false, false, true)
 	print("unloading bat", name, manager.current_scene, agent_key)
 
 enum {
