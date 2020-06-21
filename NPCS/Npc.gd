@@ -1,3 +1,4 @@
+class_name NPC
 extends KinematicBody2D
 
 const EnemyDeathEffect = preload("res://Effects/EnemyDeathEffect.tscn")
@@ -8,10 +9,7 @@ export var FRICTION = 200
 
 var velocity = Vector2.ZERO
 var knockback = Vector2.ZERO
-onready var stats = $Stats
-onready var playerDetectionZone = $PlayerDetectionZone
-onready var sprite = $BatSprite
-onready var hurtbox = $HurtBox
+onready var sprite = $Sprite
 onready var softCollision = $SoftCollision
 onready var wanderController = $WanderController
 onready var blinkAnimator = $BlinkAnimationPlayer
@@ -19,7 +17,7 @@ onready var pathFollower = $FollowingObject
 var target = null
 var path = []
 
-var saveable = ["position","stats.health","agent_key","state"]
+var saveable = ["position","agent_key","state"]
 var offscreen_class = OffscreenAgent
 
 var agent_key
@@ -32,63 +30,90 @@ func instanced(manager:SceneManager):
 	var agent = manager.get_agent_key(self, manager.current_scene)
 	if agent:
 		agent_key = agent.id
-	print("load bat")
-	if agent.task == 'chase':
-		state = CHASE
-	get_node("PlayerDetectionZone/CollisionShape2D").shape.radius = 168
+	print("load npc")
 func unload(manager:SceneManager):
 	if agent_key:
 		var task = 'idle'
-		if state == CHASE and target:
-			task = 'chase'
 		if manager.agents.get(agent_key):
 			manager.agents[agent_key].update(self, manager.current_scene, task)
-	print("unloading bat", name, manager.current_scene, agent_key)
+	print("unloading npc", name, manager.current_scene, agent_key)
 
 enum {
+	SPEAKING,
 	IDLE,
 	WANDER,
-	CHASE
+	GREET,
+	WAITING
 }
 
-var state = CHASE
+var state = IDLE
+var state_args = []
+export var desires := [
+	[1, GREET, "You seem to have wandered into my domain."],
+	[2, GREET, "This is the garden."]
+]
+func desire_sort(a, b):
+	if a[0]<b[0]:
+		return true
+	return false
+func resolve_desire(state, state_args):
+	desires.sort_custom(self, "desire_sort")
+	for i in range(0, desires.size()):
+		if desires[i][1] == state and desires[i].slice(2,-1) == state_args:
+			desires.remove(i)
+			return
 
 func _ready():
-	pass
+	EventSystem.connect("text_cleared", self, "brain")
+	
+func brain():
+	if desires.size()==0:
+		state = pick_random_state([IDLE, WANDER])
+		return
+	desires.sort_custom(self, "desire_sort")
+	var args:Array = desires[0]
+	state = args[1]
+	state_args = args.slice(2,-1)
 
 func _physics_process(delta: float):
 	knockback = knockback.move_toward(Vector2.ZERO, FRICTION * delta)
 	knockback = move_and_slide(knockback)
 	
 	match state:
+		SPEAKING:
+			velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 		IDLE:
 			velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
-			seek_player()
 			if wanderController.get_time_left()==0:
-				state = pick_random_state([IDLE, WANDER])
+				brain()
 				wanderController.start_wander_timer(rand_range(1, 3))
 		WANDER:
-			seek_player()
 			if wanderController.get_time_left()==0:
-				state = pick_random_state([IDLE, WANDER])
+				brain()
 				wanderController.start_wander_timer(rand_range(1, 3))
 			accelerate_toward(wanderController.target_position, delta)
-		CHASE:
-			var player = playerDetectionZone.player
+		GREET:
+			var player = SceneManager.get_player()
 			if player != null:
-				target = player
-			if target != null:
 				# TODO - should find the closest edge on the path
 				var next = pathFollower.next(global_position, 
-											target.global_position, 
+											player.global_position, 
 											true)
+				var reached = false
 				if next:
-					accelerate_toward(next, delta)
+					reached = accelerate_toward(next, delta)
+				else:
+					reached = true
+				if reached:
+					EventSystem.add_text(state_args[0])
+					resolve_desire(state, state_args)
+					state = SPEAKING
+					return
 	if(softCollision.is_colliding()):
 		velocity += softCollision.get_push_vector() * delta * 400
 	velocity = move_and_slide(velocity)
 	if get_slide_count()>0:
-		pick_random_state([IDLE, WANDER])
+		brain()
 	
 	
 func accelerate_toward(point, delta):
@@ -96,40 +121,12 @@ func accelerate_toward(point, delta):
 	sprite.flip_h = dirToTarget.x < 0
 	velocity = velocity.move_toward(dirToTarget * MAX_SPEED, ACCELERATION * delta)
 	if(global_position.distance_to(point)<=MAX_SPEED*0.04):
-		state = pick_random_state([IDLE, WANDER])
-
-func seek_player():
-	if playerDetectionZone.can_see_player():
-		state = CHASE
+		return true
+	return false
 		
 func pick_random_state(state_list):
 	state_list.shuffle()
 	return state_list.pop_front()
 
-func _on_HurtBox_area_entered(area):
-	var hit_direction = (global_position - area.global_position).normalized()
-	hit_direction += area.knockback_vector.normalized()
-	knockback = hit_direction.normalized() * 150
-	stats.health -= area.damage
-	hurtbox.create_hit_effect(16)
-	hurtbox.start_invincibility(0.4)
-
-func _on_Stats_no_health():
-	var enemyDeathEffect = EnemyDeathEffect.instance()
-	enemyDeathEffect.position = position + Vector2(0,-16)
-	get_parent().add_child(enemyDeathEffect)
-	SceneManager.delete(self)
-	EventSystem.add_text("The evil bat is no more!\nYou have won.")
-
-
-
-func _on_HurtBox_invinsibility_started():
-	blinkAnimator.play("Start")
-
-
-func _on_HurtBox_invinsibility_ended():
-	blinkAnimator.play("Stop")
-
-
 func _on_FollowingObject_finished_path():
-	state = pick_random_state([IDLE, WANDER])
+	pass

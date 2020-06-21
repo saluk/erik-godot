@@ -29,6 +29,8 @@ func change_agent_scene(id, scene_name, teleport_group=null):
 	if scene_name != current_scene:
 		print("Moved to another offloaded scene")
 		return
+	instance_agent(agent)
+func instance_agent(agent):
 	print("instancing", agent)
 	var node = load(agent.instance_type).instance()
 	node.agent_key = agent.id
@@ -39,11 +41,11 @@ func change_agent_scene(id, scene_name, teleport_group=null):
 		node.position = tele.position + tele.offset
 	else:
 		node.position = agent.position
-	node.state = node.CHASE
-	node.get_node("PlayerDetectionZone/CollisionShape2D").shape.radius = 168
+	node.instanced(self)
 	
 func _process(_delta):
 	for agent in agents.values():
+		#print(agent.id," ",agent.task)
 		if agent.scene_name != current_scene:
 			agent._process(_delta)
 
@@ -52,30 +54,28 @@ func get_player():
 	if player:
 		return player[0]
 	return null
-	
-func filename_to_scenename(filename:String):
-	var lastpath = filename.split('/')[-1]
-	return lastpath.split(".")[0]
 
 func _ready():
-	current_scene = filename_to_scenename(get_tree().current_scene.filename)
+	current_scene = get_tree().current_scene.filename
 	self.call_deferred("init_universe")
 	
 func init_universe():
-	for scene_name in ["Scene1", "Scene2"]:
+	var original_scene = current_scene
+	for scene_name in ["Scene1", "Scene2", "Milestone1a"]:
 		print("Loading...", scene_name)
-		var loaded_resource = load("res://maps/"+scene_name+".tscn")
-		scenes[scene_name] = {
+		var file_name = "res://maps/"+scene_name+".tscn"
+		var loaded_resource = load(file_name)
+		scenes[file_name] = {
 			"scene":loaded_resource,
 			"astar_map": AStar2D.new()
 		}
-		current_scene = scene_name
+		current_scene = file_name
 		var loaded_scene = loaded_resource.instance()
 		get_tree().get_root().add_child(loaded_scene)
-		add_metadata(loaded_scene, scene_name)
+		add_metadata(loaded_scene, file_name)
 	print("finish_loading universe")
 	print(scenes)
-	change_scene(current_scene)
+	change_scene(original_scene)
 	
 func add_metadata(loaded_scene:Node, scene_name:String):
 	loaded_scene.propagate_call("add_metadata", [self, scene_name])
@@ -85,7 +85,11 @@ func add_metadata(loaded_scene:Node, scene_name:String):
 	
 func get_metadata():
 	if not scenes.has(current_scene):
-		return {}
+		print(scenes)
+		print(current_scene)
+		scenes[current_scene] = {
+			"astar_map": AStar2D.new()
+		}
 	return scenes[current_scene]
 
 # warning-ignore:shadowed_variable
@@ -97,12 +101,9 @@ func change_scene(to_scene, teleport_group=null,
 	self.relativeVector = relativeVector
 	save_objects()
 	current_scene = to_scene
-	if "res://" in to_scene:
-# warning-ignore:return_value_discarded
-		get_tree().change_scene(to_scene)
-	else:
-# warning-ignore:return_value_discarded
-		get_tree().change_scene_to(scenes[to_scene]["scene"])
+	if not "res://" in to_scene:
+		to_scene = "res://maps/"+to_scene+".tscn"
+	get_tree().change_scene_to(scenes[to_scene]["scene"])
 
 func finish_loading(scene):
 	load_objects()
@@ -137,10 +138,6 @@ func load_objects(tree=null):
 	var scene_name = get_tree().current_scene.filename
 	if not tree:
 		tree = get_tree().current_scene
-		tree.propagate_call("loadinit", [self])
-		for agent in agents.values():
-			if agent.scene_name == current_scene:
-				change_agent_scene(agent.id, current_scene)
 	for object in tree.get_children():
 		load_objects(object)
 		var states = objectStates.get(scene_name,{}).get(object.name,{})
@@ -148,6 +145,10 @@ func load_objects(tree=null):
 			object.queue_free()
 			continue
 		Serialization.read_serial_ob(object, states)
+	if tree == get_tree().current_scene:
+		for agent in agents.values():
+			if agent.scene_name == current_scene:
+				change_agent_scene(agent.id, current_scene)
 			
 func save_objects(tree=null, save_player=false):
 	var scene_name = get_tree().current_scene.filename
@@ -162,6 +163,7 @@ func save_objects(tree=null, save_player=false):
 		save_object_change(object, Serialization.write_serial_ob(object, states))
 		
 func delete(object:Node, delete_agent=true, delete_object=true, save_deletion=true):
+	print("delete ",object, " ", delete_agent, " ", delete_object, " ", save_deletion)
 	if save_deletion:
 		self.save_object_change(object, {"_delete":true})
 	if delete_object:

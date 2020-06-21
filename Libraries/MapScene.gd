@@ -4,6 +4,6 @@ onready var pathSystem = $PathSystem
 var scene_name
 
 func _ready():
-	SceneManager.finish_loading(self)
 	pathSystem.init()
+	SceneManager.finish_loading(self)
 	PlayerStats.refresh()

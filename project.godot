@@ -10,6 +10,16 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Node",
+"class": "ArrayFuncs",
+"language": "GDScript",
+"path": "res://Libraries/array.gd"
+}, {
+"base": "KinematicBody2D",
+"class": "NPC",
+"language": "GDScript",
+"path": "res://NPCS/Npc.gd"
+}, {
+"base": "Node",
 "class": "Nodes",
 "language": "GDScript",
 "path": "res://Libraries/nodes.gd"
@@ -30,6 +40,8 @@ _global_script_classes=[ {
 "path": "res://Libraries/vectors.gd"
 } ]
 _global_script_class_icons={
+"ArrayFuncs": "",
+"NPC": "",
 "Nodes": "",
 "OffscreenAgent": "",
 "Serialization": "",

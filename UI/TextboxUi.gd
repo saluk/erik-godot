@@ -13,6 +13,7 @@ func _input(event):
 	if event.is_action_pressed("attack"):
 		panel.visible = false
 		get_tree().set_input_as_handled()
+		EventSystem.emit_signal("text_cleared")
 
 func set_text(text):
 	panelText.text = text

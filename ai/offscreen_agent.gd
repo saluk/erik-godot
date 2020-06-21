@@ -80,7 +80,7 @@ func follow_path(_astarMap, delta, destination):
 	position += position.direction_to(np) * speed * delta
 
 func chase_action(delta):
-	#print("chase_",self.id)
+	print("chase_",self.id)
 	var meta = get_scene_meta()
 	var astar = meta['astar_map']
 	var player = SceneManager.get_player()

@@ -14,8 +14,6 @@ onready var debugLines = $DebugLines
 
 func get_astar_map():
 	var meta = SceneManager.get_metadata()
-	if not meta.has("astar_map"):
-		return AStar2D.new()
 	return meta["astar_map"]
 func set_astar_map(map):
 	pass
