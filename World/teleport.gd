@@ -9,5 +9,6 @@ func _on_Teleport_body_entered(body):
 							body.global_position-global_position)
 
 func add_metadata(manager, scene_name):
+	print("register teleport scene:", scene_name, " name:", self.name)
 	manager.scenes[scene_name]['doors'] = manager.scenes[scene_name].get('doors', [])
-	manager.scenes[scene_name]['doors'].append([to_scene,position,teleport_group])
+	manager.scenes[scene_name]['doors'].append([to_scene, position, teleport_group, self.name])

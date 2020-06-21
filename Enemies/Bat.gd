@@ -22,28 +22,28 @@ var path = []
 var saveable = ["position","stats.health","agent_key","state"]
 var offscreen_class = OffscreenAgent
 
-var agent_key
+var agent
 func add_metadata(manager:SceneManager, scene_name):
-	if not agent_key:
-		var agent = manager.add_agent(self, scene_name)
-		agent_key = agent.id
+	if not agent:
+		agent = manager.add_agent(self, scene_name)
+		print("register agent",agent.id)
+	else:
+		print("duplicate adding metadata for key", agent.id)
 	SceneManager.delete(self, false, false, true)
 func instanced(manager:SceneManager):
-	var agent = manager.get_agent_key(self, manager.current_scene)
-	if agent:
-		agent_key = agent.id
-	print("load bat")
 	if agent.task == 'chase':
 		state = CHASE
+	print("load bat")
 	get_node("PlayerDetectionZone/CollisionShape2D").shape.radius = 168
 func unload(manager:SceneManager):
-	if agent_key:
+	if agent:
 		var task = 'idle'
 		if state == CHASE and target:
 			task = 'chase'
-		if manager.agents.get(agent_key):
-			manager.agents[agent_key].update(self, manager.current_scene, task)
-	print("unloading bat", name, manager.current_scene, agent_key)
+		agent.update(self, manager.current_scene, task)
+		print("unloading bat", name, manager.current_scene, agent.id, task)
+	else:
+		print("no agent found to unload", self)
 
 enum {
 	IDLE,

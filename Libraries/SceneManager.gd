@@ -21,19 +21,18 @@ func add_agent(node, scene_name) -> String:
 	agent.update(node, scene_name)
 	agents[agent.id] = agent
 	return agent
-func get_agent_key(node, scene_name):
-	return agents.get(OffscreenAgent.make_key(node, scene_name), null)
 func change_agent_scene(id, scene_name, teleport_group=null):
+	scene_name = get_scene_path(scene_name)
 	var agent = agents[id]
 	agent.scene_name = scene_name
 	if scene_name != current_scene:
 		print("Moved to another offloaded scene")
 		return
-	instance_agent(agent)
-func instance_agent(agent):
+	instance_agent(agent, teleport_group)
+func instance_agent(agent, teleport_group=null):
 	print("instancing", agent)
 	var node = load(agent.instance_type).instance()
-	node.agent_key = agent.id
+	node.agent = agent
 	get_tree().current_scene.get_node('Objects').add_child(node)
 	Serialization.read_serial_ob(node, agent.data)
 	if teleport_group:
@@ -75,6 +74,7 @@ func init_universe():
 		add_metadata(loaded_scene, file_name)
 	print("finish_loading universe")
 	print(scenes)
+	print("original scene:",original_scene)
 	change_scene(original_scene)
 	
 func add_metadata(loaded_scene:Node, scene_name:String):
@@ -85,24 +85,31 @@ func add_metadata(loaded_scene:Node, scene_name:String):
 	
 func get_metadata():
 	if not scenes.has(current_scene):
+		print("-> create new scene metadata:", current_scene)
 		print(scenes)
 		print(current_scene)
 		scenes[current_scene] = {
 			"astar_map": AStar2D.new()
 		}
 	return scenes[current_scene]
+	
+func get_scene_path(name):
+	if not "res://" in name:
+		name = "res://maps/"+name+".tscn"
+	return name
 
 # warning-ignore:shadowed_variable
 # warning-ignore:shadowed_variable
 func change_scene(to_scene, teleport_group=null, 
 				  relativeVector=null):
+	to_scene = get_scene_path(to_scene)
 	in_process = true
 	self.teleport_group = teleport_group
 	self.relativeVector = relativeVector
 	save_objects()
 	current_scene = to_scene
-	if not "res://" in to_scene:
-		to_scene = "res://maps/"+to_scene+".tscn"
+	print("Changed scene:",current_scene)
+	print("scenes:",scenes)
 	get_tree().change_scene_to(scenes[to_scene]["scene"])
 
 func finish_loading(scene):
@@ -148,7 +155,7 @@ func load_objects(tree=null):
 	if tree == get_tree().current_scene:
 		for agent in agents.values():
 			if agent.scene_name == current_scene:
-				change_agent_scene(agent.id, current_scene)
+				instance_agent(agent)
 			
 func save_objects(tree=null, save_player=false):
 	var scene_name = get_tree().current_scene.filename
@@ -169,9 +176,9 @@ func delete(object:Node, delete_agent=true, delete_object=true, save_deletion=tr
 	if delete_object:
 		object.queue_free()
 	if delete_agent:
-		if object.get('agent_key'):
-			if agents.get(object.agent_key,null):
-				agents.erase(object.agent_key)
+		if object.get('agent'):
+			if agents.get(object.agent.id,null):
+				agents.erase(object.agent.id)
 				
 
 func _input(event):

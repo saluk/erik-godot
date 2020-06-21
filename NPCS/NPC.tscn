@@ -1,8 +1,9 @@
-[gd_scene load_steps=19 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://Enemies/Bat.png" type="Texture" id=1]
 [ext_resource path="res://Shadows/SmallShadow.png" type="Texture" id=2]
 [ext_resource path="res://NPCS/Npc.gd" type="Script" id=3]
+[ext_resource path="res://HitHurtBoxes/HurtBox.tscn" type="PackedScene" id=4]
 [ext_resource path="res://HitHurtBoxes/SoftCollision.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Enemies/WanderController.tscn" type="PackedScene" id=9]
 [ext_resource path="res://WhiteColor.shader" type="Shader" id=10]
@@ -79,6 +80,9 @@ tracks/0/keys = {
 "values": [ false ]
 }
 
+[sub_resource type="CircleShape2D" id=13]
+radius = 23.0
+
 [node name="NPC" type="KinematicBody2D"]
 collision_layer = 16
 script = ExtResource( 3 )
@@ -87,7 +91,6 @@ script = ExtResource( 3 )
 material = SubResource( 1 )
 frames = SubResource( 7 )
 animation = "fly"
-frame = 1
 playing = true
 offset = Vector2( 0, -12 )
 
@@ -110,6 +113,15 @@ anims/Start = SubResource( 11 )
 anims/Stop = SubResource( 12 )
 
 [node name="FollowingObject" parent="." instance=ExtResource( 11 )]
+
+[node name="HurtBox" parent="." instance=ExtResource( 4 )]
+collision_layer = 8
+
+[node name="CollisionShape2D" parent="HurtBox" index="0"]
+shape = SubResource( 13 )
 [connection signal="finished_path" from="FollowingObject" to="." method="_on_FollowingObject_finished_path"]
+[connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
 
 [editable path="SoftCollision"]
+
+[editable path="HurtBox"]

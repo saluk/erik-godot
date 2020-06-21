@@ -28,8 +28,6 @@ func add_metadata(manager:SceneManager, scene_name):
 	SceneManager.delete(self, false, false, true)
 func instanced(manager:SceneManager):
 	var agent = manager.get_agent_key(self, manager.current_scene)
-	if agent:
-		agent_key = agent.id
 	print("load npc")
 func unload(manager:SceneManager):
 	if agent_key:
@@ -48,6 +46,8 @@ enum {
 
 var state = IDLE
 var state_args = []
+var state_text := "This is my humble garden"
+export var greet_distance = 64
 export var desires := [
 	[1, GREET, "You seem to have wandered into my domain."],
 	[2, GREET, "This is the garden."]
@@ -99,12 +99,8 @@ func _physics_process(delta: float):
 				var next = pathFollower.next(global_position, 
 											player.global_position, 
 											true)
-				var reached = false
-				if next:
-					reached = accelerate_toward(next, delta)
-				else:
-					reached = true
-				if reached:
+				accelerate_toward(next, delta)
+				if global_position.distance_to(player.global_position)<=greet_distance:
 					EventSystem.add_text(state_args[0])
 					resolve_desire(state, state_args)
 					state = SPEAKING
@@ -130,3 +126,7 @@ func pick_random_state(state_list):
 
 func _on_FollowingObject_finished_path():
 	pass
+
+func _on_HurtBox_area_entered(area):
+	EventSystem.add_text(state_text)
+	state = SPEAKING

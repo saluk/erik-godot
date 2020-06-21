@@ -34,14 +34,9 @@ func _process(delta):
 			pass
 			
 func get_scene_meta():
-	print("get meta:",scene_name)
 	return SceneManager.scenes[scene_name]
 
 func find_path(_astar_map:AStar2D, start:Vector2, end:Vector2):
-	print("map:",_astar_map," start:",start," end:",end)
-	print(_astar_map.get_points())
-	print(_astar_map.get_closest_point(start))
-	print(_astar_map.get_closest_point(end))
 	var points = _astar_map.get_point_path(
 		_astar_map.get_closest_point(start), 
 		_astar_map.get_closest_point(end))
@@ -80,14 +75,12 @@ func follow_path(_astarMap, delta, destination):
 	position += position.direction_to(np) * speed * delta
 
 func chase_action(delta):
-	print("chase_",self.id)
 	var meta = get_scene_meta()
 	var astar = meta['astar_map']
 	var player = SceneManager.get_player()
 	for door in meta.get('doors', []):
-		if door[0] == SceneManager.current_scene:
+		if SceneManager.get_scene_path(door[0]) == SceneManager.current_scene:
 			if follow_path(astar, delta, door[1]):
-				print("reached exit")
 				task = "idle"
 				SceneManager.change_agent_scene(id, door[0], door[2])
 			else:
