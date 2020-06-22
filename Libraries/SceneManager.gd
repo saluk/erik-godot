@@ -7,6 +7,9 @@ signal done_loading
 
 var ui_scene = load("res://UI/UI.tscn")
 
+var agentTimer:Timer
+var AGENT_INTERVAL := 0.25
+
 #scene_name->object_name->dictionary
 #saves object states that have changed
 #reapplies those states when scene loads
@@ -41,10 +44,9 @@ func instance_agent(agent, teleport_group=null):
 	else:
 		node.position = agent.position
 	node.instanced(self)
-	
-func _process(_delta):
+
+func _process_agents(_delta):
 	for agent in agents.values():
-		#print(agent.id," ",agent.task)
 		if agent.scene_name != current_scene:
 			agent._process(_delta)
 
@@ -55,10 +57,15 @@ func get_player():
 	return null
 
 func _ready():
+	agentTimer = Timer.new()
 	current_scene = get_tree().current_scene.filename
 	self.call_deferred("init_universe")
 	
 func init_universe():
+	# Timer's only work when added to the scene
+	get_tree().root.add_child(agentTimer)
+	agentTimer.start(AGENT_INTERVAL)
+	agentTimer.connect("timeout", self, "_process_agents", [AGENT_INTERVAL])
 	var original_scene = current_scene
 	for scene_name in ["Scene1", "Scene2", "Milestone1a"]:
 		print("Loading...", scene_name)

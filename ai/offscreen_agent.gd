@@ -72,7 +72,9 @@ func follow_path(_astarMap, delta, destination):
 	var np = next(path)
 	if not np:
 		return true
-	position += position.direction_to(np) * speed * delta
+	var distance = position.distance_to(np)
+	var max_speed = min(distance, speed*delta)
+	position += position.direction_to(np) * max_speed
 
 func chase_action(delta):
 	var meta = get_scene_meta()
