@@ -64,6 +64,12 @@ EventSystem="*res://Libraries/EventSystem.gd"
 SceneManager="*res://Libraries/SceneManager.gd"
 PlayerStats="*res://Player/PlayerStats.tscn"
 
+[debug]
+
+gdscript/warnings/unused_argument=false
+gdscript/warnings/unused_signal=false
+gdscript/warnings/return_value_discarded=false
+
 [display]
 
 window/size/width=320
