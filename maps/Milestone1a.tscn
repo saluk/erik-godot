@@ -503,7 +503,7 @@ points = PoolVector2Array( 0, 0, 32, 0, 32, 32, 0, 32 )
 } ]
 0/z_index = 0
 
-[sub_resource type="AnimationNodeStateMachinePlayback" id=53]
+[sub_resource type="AnimationNodeStateMachinePlayback" id=51]
 
 [node name="MapScene" instance=ExtResource( 1 )]
 
@@ -559,7 +559,7 @@ position = Vector2( 295, 11 )
 frame = 36
 
 [node name="AnimationTree" parent="Objects/Player" index="4"]
-parameters/playback = SubResource( 53 )
+parameters/playback = SubResource( 51 )
 
 [node name="Position2D" parent="Objects/Player" index="5"]
 rotation = -3.14159

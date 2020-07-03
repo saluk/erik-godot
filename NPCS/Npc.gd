@@ -17,7 +17,7 @@ onready var pathFollower = $FollowingObject
 var target = null
 var path = []
 
-var saveable = ["position","agent_key","state"]
+var saveable = ["position","state"]
 var offscreen_class = OffscreenAgent
 
 var agent_key
@@ -27,8 +27,7 @@ func add_metadata(manager:SceneManager, scene_name):
 		agent_key = agent.id
 	SceneManager.delete(self, false, false, true)
 func instanced(manager:SceneManager):
-	var agent = manager.get_agent_key(self, manager.current_scene)
-	print("load npc")
+	pass
 func unload(manager:SceneManager):
 	if agent_key:
 		var task = 'idle'

@@ -32,10 +32,10 @@ func change_agent_scene(id, scene_name, teleport_group=null):
 		print("Moved to another offloaded scene")
 		return
 	instance_agent(agent, teleport_group)
-func instance_agent(agent, teleport_group=null):
-	print("instancing", agent)
+func instance_agent(agent:OffscreenAgent, teleport_group=null):
+	print("instancing", agent.id, agent.data)
 	var node = load(agent.instance_type).instance()
-	node.agent = agent
+	node.agent_key = agent.id
 	get_tree().current_scene.get_node('Objects').add_child(node)
 	Serialization.read_serial_ob(node, agent.data)
 	if teleport_group:
@@ -43,6 +43,7 @@ func instance_agent(agent, teleport_group=null):
 		node.position = tele.position + tele.offset
 	else:
 		node.position = agent.position
+	print("node key:",node.agent_key)
 	node.instanced(self)
 
 func _process_agents(_delta):

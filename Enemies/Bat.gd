@@ -19,24 +19,29 @@ onready var pathFollower = $FollowingObject
 var target = null
 var path = []
 
-var saveable = ["position","stats.health","agent_key","state"]
+var saveable = ["position","stats.health","state"]
 var offscreen_class = OffscreenAgent
 
-var agent
+var agent_key
+
 func add_metadata(manager:SceneManager, scene_name):
-	if not agent:
-		agent = manager.add_agent(self, scene_name)
-		print("register agent",agent.id)
+	if not agent_key:
+		var agent = manager.add_agent(self, scene_name)
+		print("register agent ",agent.id)
+		agent_key = agent.id
 	else:
-		print("duplicate adding metadata for key", agent.id)
+		print("duplicate adding metadata for key", agent_key)
 	SceneManager.delete(self, false, false, true)
 func instanced(manager:SceneManager):
+	print(agent_key)
+	var agent = manager.agents[agent_key]
 	if agent.task == 'chase':
 		state = CHASE
 	print("load bat")
 	get_node("PlayerDetectionZone/CollisionShape2D").shape.radius = 168
 func unload(manager:SceneManager):
-	if agent:
+	if agent_key:
+		var agent = manager.agents[agent_key]
 		var task = 'idle'
 		if state == CHASE and target:
 			task = 'chase'

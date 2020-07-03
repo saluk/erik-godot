@@ -569,7 +569,6 @@ skew = 4.37114e-08
 
 [node name="BatSprite" parent="Objects/Bat" index="0"]
 material = SubResource( 51 )
-frame = 4
 
 [node name="CollisionShape2D" parent="Objects/Bat/PlayerDetectionZone" index="0"]
 shape = SubResource( 52 )
