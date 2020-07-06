@@ -753,7 +753,6 @@ tracks/0/keys = {
 [node name="Player" type="KinematicBody2D" groups=[
 "player",
 ]]
-position = Vector2( 0, -8 )
 collision_layer = 2
 script = ExtResource( 2 )
 __meta__ = {
@@ -761,18 +760,17 @@ __meta__ = {
 }
 
 [node name="shadow" type="Sprite" parent="."]
-position = Vector2( 0, 12 )
+position = Vector2( 0, -1 )
 texture = ExtResource( 6 )
 
 [node name="Sprite" type="Sprite" parent="."]
 material = SubResource( 1 )
-position = Vector2( 1, 0 )
+position = Vector2( 1, -13 )
 texture = ExtResource( 1 )
 hframes = 60
-frame = 24
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 8 )
+position = Vector2( 0, -5 )
 rotation = -1.5708
 shape = SubResource( 2 )
 
@@ -804,7 +802,7 @@ parameters/Roll/blend_position = Vector2( 0, 0 )
 parameters/Run/blend_position = Vector2( 0.18281, -0.226286 )
 
 [node name="Position2D" type="Position2D" parent="."]
-position = Vector2( 0, 5 )
+position = Vector2( 0, -8 )
 rotation = 1.5708
 
 [node name="SwordHitBox" parent="Position2D" instance=ExtResource( 3 )]
@@ -818,6 +816,7 @@ shape = SubResource( 47 )
 disabled = true
 
 [node name="HurtBox" parent="." instance=ExtResource( 5 )]
+position = Vector2( 0, -13 )
 collision_layer = 4
 
 [node name="CollisionShape2D" parent="HurtBox" index="0"]

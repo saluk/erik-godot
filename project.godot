@@ -51,7 +51,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Actionrpg"
-run/main_scene="res://maps/Scene1.tscn"
+run/main_scene="res://maps/Milestone1a.tscn"
 config/icon="res://icon.png"
 
 [audio]
