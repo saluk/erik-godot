@@ -1,0 +1,24 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Enemies/BatFrames.tres" type="SpriteFrames" id=1]
+[ext_resource path="res://NPCS/NPC.tscn" type="PackedScene" id=2]
+[ext_resource path="res://WhiteColor.shader" type="Shader" id=3]
+[ext_resource path="res://NPCS/Bug.gd" type="Script" id=4]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/active = false
+
+[node name="Bug" instance=ExtResource( 2 )]
+script = ExtResource( 4 )
+
+[node name="Sprite" parent="." index="0"]
+material = SubResource( 1 )
+frames = ExtResource( 1 )
+animation = "fly"
+frame = 1
+
+[editable path="SoftCollision"]
+
+[editable path="HurtBox"]

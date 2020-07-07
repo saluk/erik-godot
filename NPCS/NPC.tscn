@@ -14,34 +14,35 @@ resource_local_to_scene = true
 shader = ExtResource( 10 )
 shader_param/active = false
 
-[sub_resource type="AtlasTexture" id=2]
+[sub_resource type="AtlasTexture" id=11]
 atlas = ExtResource( 1 )
 region = Rect2( 0, 0, 16, 32 )
 
-[sub_resource type="AtlasTexture" id=3]
+[sub_resource type="AtlasTexture" id=12]
 atlas = ExtResource( 1 )
 region = Rect2( 0, 0, 16, 32 )
 
-[sub_resource type="AtlasTexture" id=4]
+[sub_resource type="AtlasTexture" id=13]
 atlas = ExtResource( 1 )
 region = Rect2( 16, 0, 16, 32 )
 
-[sub_resource type="SpriteFrames" id=5]
+[sub_resource type="SpriteFrames" id=14]
+resource_local_to_scene = true
 animations = [ {
-"frames": [ SubResource( 2 ) ],
+"frames": [ SubResource( 11 ) ],
 "loop": true,
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 3 ), SubResource( 4 ) ],
+"frames": [ SubResource( 12 ), SubResource( 13 ) ],
 "loop": true,
 "name": "talk",
 "speed": 10.0
 } ]
 
-[sub_resource type="CircleShape2D" id=6]
+[sub_resource type="CircleShape2D" id=15]
 
-[sub_resource type="CircleShape2D" id=7]
+[sub_resource type="CircleShape2D" id=16]
 radius = 11.0
 
 [sub_resource type="Animation" id=8]
@@ -86,7 +87,7 @@ script = ExtResource( 3 )
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 material = SubResource( 1 )
-frames = SubResource( 5 )
+frames = SubResource( 14 )
 animation = "idle"
 playing = true
 offset = Vector2( 0, -12 )
@@ -95,13 +96,13 @@ offset = Vector2( 0, -12 )
 texture = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource( 6 )
+shape = SubResource( 15 )
 
 [node name="SoftCollision" parent="." instance=ExtResource( 8 )]
 
 [node name="CollisionShape2D" parent="SoftCollision" index="0"]
 position = Vector2( 0, -14 )
-shape = SubResource( 7 )
+shape = SubResource( 16 )
 
 [node name="WanderController" parent="." instance=ExtResource( 9 )]
 

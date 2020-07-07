@@ -16,3 +16,20 @@ static func find_nodes_in_group(var n:Node, var group:String):
 		for child in cur.get_children():
 			nodes.append(child)
 	return found
+
+static func is_equal_array(var a:Array, var b:Array):
+	pass
+
+static func is_equal_dict(var a:Dictionary, var b:Dictionary):
+	var ak = a.keys()
+	var bk = b.keys()
+	for k in ak:
+		if not b.has(k):
+			return false
+		if a[k] != b[k]:
+			return false
+	for k in bk:
+		if not a.has(k):
+			return false
+	return true
+		

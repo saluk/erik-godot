@@ -1,10 +1,13 @@
-[gd_scene load_steps=57 format=2]
+[gd_scene load_steps=60 format=2]
 
 [ext_resource path="res://Libraries/MapScene.tscn" type="PackedScene" id=1]
 [ext_resource path="res://World/DirtTileset.png" type="Texture" id=2]
 [ext_resource path="res://World/GrassBackground.png" type="Texture" id=3]
 [ext_resource path="res://World/CliffTileset.png" type="Texture" id=4]
 [ext_resource path="res://NPCS/NPC.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Objects/Carrot.tscn" type="PackedScene" id=6]
+[ext_resource path="res://NPCS/Bug.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Objects/Radish.tscn" type="PackedScene" id=8]
 
 [sub_resource type="TileSet" id=1]
 0/name = "GrassBackground.png 0"
@@ -538,21 +541,33 @@ format = 1
 position = Vector2( 295, 11 )
 limit_right = 320
 
-[node name="Shrubs" type="YSort" parent="Objects" index="0" groups=[
+[node name="Carrot" parent="Objects" index="0" instance=ExtResource( 6 )]
+position = Vector2( 77, 74 )
+skew = 4.37114e-08
+
+[node name="Carrot2" parent="Objects" index="1" instance=ExtResource( 6 )]
+position = Vector2( 133, -22 )
+skew = 4.37114e-08
+
+[node name="Carrot3" parent="Objects" index="2" instance=ExtResource( 6 )]
+position = Vector2( 199, 100 )
+skew = 4.37114e-08
+
+[node name="Shrubs" type="YSort" parent="Objects" index="3" groups=[
 "collide_block_object",
 ]]
 skew = 4.37114e-08
 
-[node name="Grass" type="YSort" parent="Objects" index="1"]
+[node name="Grass" type="YSort" parent="Objects" index="4"]
 skew = 4.37114e-08
 sort_enabled = false
 
-[node name="Trees" type="YSort" parent="Objects" index="2" groups=[
+[node name="Trees" type="YSort" parent="Objects" index="5" groups=[
 "collide_block_object",
 ]]
 skew = 4.37114e-08
 
-[node name="Player" parent="Objects" index="3"]
+[node name="Player" parent="Objects" index="6"]
 position = Vector2( 295, 11 )
 
 [node name="Sprite" parent="Objects/Player" index="1"]
@@ -564,7 +579,23 @@ parameters/playback = SubResource( 51 )
 [node name="Position2D" parent="Objects/Player" index="5"]
 rotation = -3.14159
 
-[node name="Gardener" parent="." index="4" instance=ExtResource( 5 )]
+[node name="Gardener" parent="Objects" index="7" instance=ExtResource( 5 )]
 position = Vector2( 131, 41 )
+skew = 4.37114e-08
+
+[node name="Bug" parent="Objects" index="8" instance=ExtResource( 7 )]
+position = Vector2( 117, 209 )
+
+[node name="Radish" parent="Objects" index="9" instance=ExtResource( 8 )]
+position = Vector2( 10, 117 )
+skew = 4.37114e-08
+
+[node name="Radish2" parent="Objects" index="10" instance=ExtResource( 8 )]
+position = Vector2( 38, 117 )
+skew = 4.37114e-08
+
+[node name="Radish3" parent="Objects" index="11" instance=ExtResource( 8 )]
+position = Vector2( 65, 118 )
+skew = 4.37114e-08
 
 [editable path="Objects/Player"]

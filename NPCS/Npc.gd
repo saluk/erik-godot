@@ -35,21 +35,22 @@ func unload(manager:SceneManager):
 			manager.agents[agent_key].update(self, manager.current_scene, task)
 	print("unloading npc", name, manager.current_scene, agent_key)
 
-enum {
+enum DESIRE_TYPE {
 	SPEAKING,
 	IDLE,
+	USE,
 	WANDER,
 	GREET,
 	WAITING
 }
 
-var state = IDLE
-var state_args = []
+var state = DESIRE_TYPE.IDLE
+var state_args = {}
 var state_text := "This is my humble garden"
 export var greet_distance = 64
 export var desires := [
-	[1, GREET, "You seem to have wandered into my domain."],
-	[2, GREET, "This is the garden."]
+	[1, DESIRE_TYPE.GREET, {"text":"Hi there!"}],
+	[2, DESIRE_TYPE.GREET, {"text":"This is the garden."}]
 ]
 func desire_sort(a, b):
 	if a[0]<b[0]:
@@ -58,7 +59,7 @@ func desire_sort(a, b):
 func resolve_desire(state, state_args):
 	desires.sort_custom(self, "desire_sort")
 	for i in range(0, desires.size()):
-		if desires[i][1] == state and desires[i].slice(2,-1) == state_args:
+		if desires[i][1] == state and ArrayFuncs.is_equal_dict(desires[i][2], state_args):
 			desires.remove(i)
 			return
 
@@ -67,31 +68,44 @@ func _ready():
 	
 func brain():
 	if desires.size()==0:
-		state = pick_random_state([IDLE, WANDER])
+		state = pick_random_state([DESIRE_TYPE.IDLE, DESIRE_TYPE.WANDER])
 		return
 	desires.sort_custom(self, "desire_sort")
 	var args:Array = desires[0]
 	state = args[1]
-	state_args = args.slice(2,-1)
+	state_args = args[2]
 
 func _physics_process(delta: float):
 	knockback = knockback.move_toward(Vector2.ZERO, FRICTION * delta)
 	knockback = move_and_slide(knockback)
 	
 	match state:
-		SPEAKING:
+		DESIRE_TYPE.SPEAKING:
 			velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
-		IDLE:
+		DESIRE_TYPE.IDLE:
 			velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 			if wanderController.get_time_left()==0:
 				brain()
 				wanderController.start_wander_timer(rand_range(1, 3))
-		WANDER:
+		DESIRE_TYPE.WANDER:
 			if wanderController.get_time_left()==0:
 				brain()
 				wanderController.start_wander_timer(rand_range(1, 3))
 			accelerate_toward(wanderController.target_position, delta)
-		GREET:
+		DESIRE_TYPE.USE:
+			if not state_args["target"]:
+				for node in Nodes.find_nodes_with_property(get_tree().current_scene, "item", state_args["item"]):
+					state_args["target"] = node
+			else:
+				# TODO - should find the closest edge on the path
+				var next = pathFollower.next(global_position, 
+				state_args["target"] .global_position, 
+											true)
+				accelerate_toward(next, delta)
+				if global_position.distance_to(state_args["target"] .global_position)<=greet_distance:
+					resolve_desire(state, state_args)
+					return
+		DESIRE_TYPE.GREET:
 			var player = SceneManager.get_player()
 			if player != null:
 				# TODO - should find the closest edge on the path
@@ -100,9 +114,10 @@ func _physics_process(delta: float):
 											true)
 				accelerate_toward(next, delta)
 				if global_position.distance_to(player.global_position)<=greet_distance:
-					EventSystem.add_text(state_args[0])
-					resolve_desire(state, state_args)
-					state = SPEAKING
+					if  EventSystem.currentText == null:
+						EventSystem.add_text(state_args["text"])
+						resolve_desire(state, state_args)
+						state = DESIRE_TYPE.SPEAKING
 					return
 	if(softCollision.is_colliding()):
 		velocity += softCollision.get_push_vector() * delta * 400
@@ -128,4 +143,4 @@ func _on_FollowingObject_finished_path():
 
 func _on_HurtBox_area_entered(area):
 	EventSystem.add_text(state_text)
-	state = SPEAKING
+	state = DESIRE_TYPE.SPEAKING

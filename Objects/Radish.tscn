@@ -1,16 +1,20 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://Objects/carrot3.tres" type="Texture" id=1]
+[ext_resource path="res://Objects/vegetables.jpg" type="Texture" id=1]
 [ext_resource path="res://Objects/Item.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 14, 6 )
+extents = Vector2( 7.74999, 8 )
 
-[node name="Carrot" type="Area2D"]
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 1 )
+region = Rect2( 261.8, 2.472, 35.5556, 34.2222 )
+
+[node name="Radish" type="Area2D"]
 collision_layer = 8
 collision_mask = 0
 script = ExtResource( 2 )
-item = "Carrot"
+item = "Radish"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( -0.749988, -3.33786e-06 )
@@ -18,7 +22,7 @@ skew = 4.37114e-08
 shape = SubResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
-position = Vector2( -0.874987, -3.09944e-06 )
-scale = Vector2( 0.0205683, 0.0248447 )
-texture = ExtResource( 1 )
+position = Vector2( 0.160014, 0.14441 )
+scale = Vector2( 0.447999, 0.462093 )
+texture = SubResource( 2 )
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
