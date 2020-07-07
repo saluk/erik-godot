@@ -59,16 +59,19 @@ func desire_sort(a, b):
 #Overwrite in subclass, what desire to add when we have none
 func create_desires():
 	assert(false)
-func resolve_desire(state, state_args):
+func remove_desire(state, state_args):
 	desires.sort_custom(self, "desire_sort")
 	for i in range(0, desires.size()):
 		if desires[i][1] == state and ArrayFuncs.is_equal_dict(desires[i][2], state_args):
 			desires.remove(i)
 			break
-	if desires.size()==0:
-		create_desires()
 func add_desire(priority:int, desire:int, arg:Dictionary):
 	desires.append([priority, desire, arg])
+func idle_state():
+	if state != DESIRE_TYPE.IDLE:
+		remove_desire(state, state_args)
+	state = DESIRE_TYPE.IDLE
+	state_args = {}
 
 func _ready():
 	EventSystem.connect("text_cleared", self, "brain")
@@ -89,6 +92,8 @@ func brain():
 		state_args = args[2]
 
 func _physics_process(delta: float):
+	$StateString.text = DESIRE_TYPE.keys()[state]
+	
 	knockback = knockback.move_toward(Vector2.ZERO, FRICTION * delta)
 	knockback = move_and_slide(knockback)
 	
@@ -104,7 +109,7 @@ func _physics_process(delta: float):
 			animate("idle")
 		DESIRE_TYPE.WANDER:
 			if wanderController.get_time_left()==0:
-				resolve_desire(DESIRE_TYPE.WANDER, {})
+				remove_desire(DESIRE_TYPE.WANDER, {})
 				brain()
 				wanderController.start_wander_timer(rand_range(1, 3))
 			accelerate_toward(wanderController.target_position, delta)
@@ -113,10 +118,11 @@ func _physics_process(delta: float):
 			if not state_args["target"]:
 				for node in Nodes.find_nodes_with_property(get_tree().current_scene, "item", state_args["item"]):
 					state_args["target"] = node
+			if not state_args["target"]:
+				idle_state()
 			else:
 				if follow_path_to(state_args["target"].global_position, delta, interact_distance):
-					resolve_desire(state, state_args)
-					state = DESIRE_TYPE.IDLE
+					idle_state()
 					return
 			animate("idle")
 		DESIRE_TYPE.CREATE:
@@ -124,15 +130,15 @@ func _physics_process(delta: float):
 				for node in get_tree().get_nodes_in_group(state_args["group"]):
 					state_args["target"] = node
 					break
+			if not state_args["target"]:
+				idle_state()
 			else:
 				if follow_path_to(state_args["target"].global_position, delta, interact_distance):
 					var created = load(state_args["path"]).instance()
 					created.position = state_args["target"].position
 					get_parent().add_child(created)
 					state_args["target"].queue_free()
-					resolve_desire(state, state_args)
-					state_args["target"] = null
-					state = DESIRE_TYPE.IDLE
+					idle_state()
 					return
 			animate("idle")
 		DESIRE_TYPE.GREET:
@@ -141,9 +147,11 @@ func _physics_process(delta: float):
 				if follow_path_to(player.global_position, delta, greet_distance):
 					if  EventSystem.currentText == null:
 						EventSystem.add_text(state_args["text"])
-						resolve_desire(state, state_args)
+						remove_desire(state, state_args)
 						state = DESIRE_TYPE.SPEAKING
 					return
+			else:
+				state = DESIRE_TYPE.IDLE
 			animate("idle")
 	if(softCollision.is_colliding()):
 		velocity += softCollision.get_push_vector() * delta * 400

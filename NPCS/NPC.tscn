@@ -89,6 +89,14 @@ collision_layer = 8
 
 [node name="CollisionShape2D" parent="HurtBox" index="0"]
 shape = SubResource( 10 )
+
+[node name="StateString" type="RichTextLabel" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+text = "Some Text"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="finished_path" from="FollowingObject" to="." method="_on_FollowingObject_finished_path"]
 [connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
 
