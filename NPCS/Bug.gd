@@ -1,6 +1,5 @@
 extends NPC
 
-func _ready():
-	desires = [
-		[10, DESIRE_TYPE.USE, {"item":"Radish", "target":null}]
-	]
+func create_desires():
+	add_desire(10, DESIRE_TYPE.USE, {"item":"Radish", "target":null})
+	add_desire(15, DESIRE_TYPE.WANDER, {})

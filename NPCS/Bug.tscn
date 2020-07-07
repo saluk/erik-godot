@@ -17,7 +17,6 @@ script = ExtResource( 4 )
 material = SubResource( 1 )
 frames = ExtResource( 1 )
 animation = "fly"
-frame = 1
 
 [editable path="SoftCollision"]
 
