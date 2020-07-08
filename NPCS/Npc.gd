@@ -8,7 +8,6 @@ export var MAX_SPEED = 50
 export var FRICTION = 200
 
 var velocity = Vector2.ZERO
-var knockback = Vector2.ZERO
 onready var sprite = $Sprite
 onready var softCollision = $SoftCollision
 onready var wanderController = $WanderController
@@ -38,7 +37,7 @@ func unload(manager:SceneManager):
 var des = Desires.new()
 
 var state:Desires.Desire = null
-var state_text := "This is my humble garden"
+var state_text := "default talking"
 export var greet_distance = 64
 export var interact_distance = 12
 	
@@ -70,8 +69,6 @@ func _physics_process(delta: float):
 	if $StateString.text != des.types.keys()[state.type]:
 		$StateString.text = des.types.keys()[state.type]
 	
-	knockback = knockback.move_toward(Vector2.ZERO, FRICTION * delta)
-	knockback = move_and_slide(knockback)
 	
 	match state.type:
 		des.types.SPEAKING:
@@ -119,7 +116,7 @@ func _physics_process(delta: float):
 					times_up = des.time_finished(state, delta)
 				if times_up:
 					var created = load(state.args["path"]).instance()
-					created.position = state.args["target"].position
+					created.position = state.args["target"].global_position
 					get_parent().add_child(created)
 					state.args["target"].queue_free()
 					finish_current()
@@ -170,6 +167,14 @@ func _on_FollowingObject_finished_path():
 	pass
 
 func _on_HurtBox_area_entered(area):
-	EventSystem.add_text(state_text)
+	player_talk()
+
+#Overwrite for different logic
+func player_talk():
+	if state_text:
+		self.speak(state_text)
+		
+func speak(text):
+	EventSystem.add_text(text)
 	des.add(0, des.types.SPEAKING)
 	brain()

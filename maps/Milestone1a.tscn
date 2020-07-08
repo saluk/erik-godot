@@ -531,6 +531,7 @@ tile_set = SubResource( 2 )
 cell_size = Vector2( 16, 16 )
 collision_mask = 0
 format = 1
+tile_data = PoolIntArray( 65543, 0, 3, 65545, 0, 0, 65546, 0, 2, 131078, 0, 0, 131079, 0, 131080, 131080, 0, 1, 131081, 0, 131078, 131082, 0, 65538, 196614, 0, 65536, 196615, 0, 65537, 196616, 0, 65537, 196617, 0, 65537, 196618, 0, 262149, 196619, 0, 196610, 262150, 0, 131072, 262151, 0, 65542, 262152, 0, 65537, 262153, 0, 65537, 262154, 0, 65538, 327687, 0, 65536, 327688, 0, 65541, 327689, 0, 131073, 327690, 0, 196618, 327691, 0, 196610, 393223, 0, 131072, 393224, 0, 131074, 393226, 0, 131075 )
 
 [node name="DirtCliff" type="TileMap" parent="TileMaps" index="2" groups=[
 "collide_block_tile",
@@ -583,7 +584,8 @@ skew = 4.37114e-08
 position = Vector2( 65, 118 )
 skew = 4.37114e-08
 
-[node name="Farm" type="Node" parent="Objects" index="7"]
+[node name="Farm" type="Node2D" parent="Objects" index="7"]
+position = Vector2( 52, 45 )
 
 [node name="Carrot" parent="Objects/Farm" index="0" instance=ExtResource( 6 )]
 position = Vector2( 77, 74 )
@@ -597,7 +599,7 @@ skew = 4.37114e-08
 position = Vector2( 199, 100 )
 skew = 4.37114e-08
 
-[node name="Spots" type="Node" parent="Objects/Farm" index="3"]
+[node name="Spots" type="Node2D" parent="Objects/Farm" index="3"]
 
 [node name="CarrotSpot" type="Position2D" parent="Objects/Farm/Spots" index="0" groups=[
 "carrot_spot",

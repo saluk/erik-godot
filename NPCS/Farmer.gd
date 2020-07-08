@@ -3,11 +3,20 @@ extends NPC
 var greeted = false
 var greet_finished = false
 
+func player_talk():
+	if not greet_finished:
+		speak("I said don't get in my way. Scram!")
+	else:
+		speak("Yeah, sure. You can take the carrots.")
+
 func create_desires():
 	if not greeted:
 		greeted = true
-		des.add(1, des.types.GREET, {"text": "You must be Erik."})
-		des.add(2, des.types.GREET, {"text": "This is my domain, I hope you are here to be useful."})
+		des.add(1, des.types.GREET, {"text": "What's your name? Erik?"})
+		des.add(2, des.types.GREET, {"text": "What are ya even here for..."})
+		des.add(3, des.types.IDLE, {"until":1, "time":0.0})
+		des.add(4, des.types.GREET, {"text": "I don't care what ya do - "})
+		des.add(5, des.types.GREET, {"text": "Just don't get in my way."})
 	#default desire
 	if get_tree().get_nodes_in_group("carrot_spot").size()>0:
 		des.add(10, des.types.CREATE, {"path":"res://Objects/PlantedCarrot.tscn",
