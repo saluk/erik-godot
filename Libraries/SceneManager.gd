@@ -88,6 +88,7 @@ func init_universe():
 func add_metadata(loaded_scene:Node, scene_name:String):
 	loaded_scene.propagate_call("add_metadata", [self, scene_name])
 	get_tree().get_root().remove_child(loaded_scene)
+	loaded_scene.queue_free()
 	print("finish loading ",scene_name)
 	print(scenes[scene_name])
 	

@@ -34,130 +34,112 @@ func unload(manager:SceneManager):
 		if manager.agents.get(agent_key):
 			manager.agents[agent_key].update(self, manager.current_scene, task)
 	print("unloading npc", name, manager.current_scene, agent_key)
+	
+var des = Desires.new()
 
-enum DESIRE_TYPE {
-	SPEAKING,
-	IDLE,
-	USE,
-	WANDER,
-	GREET,
-	CREATE,
-	WAITING
-}
-
-var state = DESIRE_TYPE.IDLE
-var state_args = {}
+var state:Desires.Desire = null
 var state_text := "This is my humble garden"
 export var greet_distance = 64
 export var interact_distance = 12
-var desires := []
-func desire_sort(a, b):
-	if a[0]<b[0]:
-		return true
-	return false
 	
 #Overwrite in subclass, what desire to add when we have none
 func create_desires():
 	assert(false)
-func remove_desire(state, state_args):
-	desires.sort_custom(self, "desire_sort")
-	for i in range(0, desires.size()):
-		if desires[i][1] == state and ArrayFuncs.is_equal_dict(desires[i][2], state_args):
-			desires.remove(i)
-			break
-func add_desire(priority:int, desire:int, arg:Dictionary):
-	desires.append([priority, desire, arg])
-func idle_state():
-	if state != DESIRE_TYPE.IDLE:
-		remove_desire(state, state_args)
-	state = DESIRE_TYPE.IDLE
-	state_args = {}
+func finish_current():
+	des.remove(state)
+	state = null
 
 func _ready():
-	EventSystem.connect("text_cleared", self, "brain")
-	brain()
+	EventSystem.connect("text_cleared", self, "finish_current")
 	
 func animate(mode):
 	if sprite.frames.has_animation(mode):
 		sprite.play(mode)
 	
 func brain():
-	if desires.size()==0:
+	if des.is_empty():
 		create_desires()
-		state = pick_random_state([DESIRE_TYPE.IDLE, DESIRE_TYPE.WANDER])
-	if desires.size()>0:
-		desires.sort_custom(self, "desire_sort")
-		var args:Array = desires[0]
-		state = args[1]
-		state_args = args[2]
+		state = null
+	if not des.is_empty():
+		des.sort()
+		state = des.desires[0]
 
 func _physics_process(delta: float):
-	$StateString.text = DESIRE_TYPE.keys()[state]
+	if state == null:
+		brain()
+	if $StateString.text != des.types.keys()[state.type]:
+		$StateString.text = des.types.keys()[state.type]
 	
 	knockback = knockback.move_toward(Vector2.ZERO, FRICTION * delta)
 	knockback = move_and_slide(knockback)
 	
-	match state:
-		DESIRE_TYPE.SPEAKING:
+	match state.type:
+		des.types.SPEAKING:
 			velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 			animate("talk")
-		DESIRE_TYPE.IDLE:
+		des.types.IDLE:
 			velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
-			if wanderController.get_time_left()==0:
-				brain()
-				wanderController.start_wander_timer(rand_range(1, 3))
+			if des.time_finished(state, delta):
+				finish_current()
 			animate("idle")
-		DESIRE_TYPE.WANDER:
-			if wanderController.get_time_left()==0:
-				remove_desire(DESIRE_TYPE.WANDER, {})
-				brain()
-				wanderController.start_wander_timer(rand_range(1, 3))
-			accelerate_toward(wanderController.target_position, delta)
+		des.types.WANDER:
+			if not state.args["position"]:
+				state.args["position"] = position
+				wanderController.start_position = position
+				wanderController.update_target_position()
+			if des.time_finished(state, delta):
+				finish_current()
+			if follow_path_to(wanderController.target_position, delta, 4):
+				velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 			animate("idle")
-		DESIRE_TYPE.USE:
-			if not state_args["target"]:
-				for node in Nodes.find_nodes_with_property(get_tree().current_scene, "item", state_args["item"]):
-					state_args["target"] = node
-			if not state_args["target"]:
-				idle_state()
+		des.types.USE:
+			if not state.args["target"]:
+				for node in Nodes.find_nodes_with_property(get_tree().current_scene, "item", state.args["item"]):
+					state.args["target"] = node
+			if not state.args["target"]:
+				finish_current()
 			else:
-				if follow_path_to(state_args["target"].global_position, delta, interact_distance):
-					idle_state()
+				if follow_path_to(state.args["target"].global_position, delta, interact_distance):
+					finish_current()
 					return
 			animate("idle")
-		DESIRE_TYPE.CREATE:
-			if not state_args["target"]:
-				for node in get_tree().get_nodes_in_group(state_args["group"]):
-					state_args["target"] = node
+		des.types.CREATE:
+			if not state.args["target"]:
+				for node in get_tree().get_nodes_in_group(state.args["group"]):
+					state.args["target"] = node
 					break
-			if not state_args["target"]:
-				idle_state()
+			if not state.args["target"]:
+				finish_current()
+				print("no target, desires left",des.desires.size())
 			else:
-				if follow_path_to(state_args["target"].global_position, delta, interact_distance):
-					var created = load(state_args["path"]).instance()
-					created.position = state_args["target"].position
+				var at_path = follow_path_to(state.args["target"].global_position, delta, interact_distance)
+				var times_up = false
+				if at_path:
+					velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+					times_up = des.time_finished(state, delta)
+				if times_up:
+					var created = load(state.args["path"]).instance()
+					created.position = state.args["target"].position
 					get_parent().add_child(created)
-					state_args["target"].queue_free()
-					idle_state()
+					state.args["target"].queue_free()
+					finish_current()
 					return
 			animate("idle")
-		DESIRE_TYPE.GREET:
+		des.types.GREET:
 			var player = SceneManager.get_player()
 			if player != null:
 				if follow_path_to(player.global_position, delta, greet_distance):
 					if  EventSystem.currentText == null:
-						EventSystem.add_text(state_args["text"])
-						remove_desire(state, state_args)
-						state = DESIRE_TYPE.SPEAKING
+						EventSystem.add_text(state.args["text"])
+						des.add(0, des.types.SPEAKING)
+						finish_current()
 					return
 			else:
-				state = DESIRE_TYPE.IDLE
+				state = des.types.IDLE
 			animate("idle")
 	if(softCollision.is_colliding()):
 		velocity += softCollision.get_push_vector() * delta * 400
 	velocity = move_and_slide(velocity)
-	if get_slide_count()>0:
-		brain()
 	
 	
 func accelerate_toward(point, delta):
@@ -175,9 +157,9 @@ func follow_path_to(point, delta, near_distance):
 								true)
 	if not next:
 		next = point
-	accelerate_toward(next, delta)
 	if global_position.distance_to(point)<=near_distance:
 		return true
+	accelerate_toward(next, delta)
 	return false
 		
 func pick_random_state(state_list):
@@ -189,4 +171,5 @@ func _on_FollowingObject_finished_path():
 
 func _on_HurtBox_area_entered(area):
 	EventSystem.add_text(state_text)
-	state = DESIRE_TYPE.SPEAKING
+	des.add(0, des.types.SPEAKING)
+	brain()

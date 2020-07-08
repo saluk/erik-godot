@@ -29,7 +29,7 @@ material = SubResource( 1 )
 position = Vector2( 0, 8 )
 scale = Vector2( 1.5, 1.5 )
 frames = SubResource( 2 )
-frame = 1
+frame = 3
 
 [node name="Shadow" parent="." index="1"]
 visible = false

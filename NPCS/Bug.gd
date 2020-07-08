@@ -2,5 +2,5 @@ extends NPC
 
 func create_desires():
 	if Nodes.find_nodes_with_property(get_tree().current_scene, "item", "Radish"):
-		add_desire(10, DESIRE_TYPE.USE, {"item":"Radish", "target":null})
-	add_desire(15, DESIRE_TYPE.WANDER, {})
+		des.add(10, des.types.USE, {"item":"Radish", "target":null})
+	des.add(15, des.types.WANDER, {"position":null, "until":rand_range(3,10), "time":0.0})
