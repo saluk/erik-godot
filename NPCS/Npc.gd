@@ -58,10 +58,7 @@ func animate(mode):
 func brain():
 	if des.is_empty():
 		create_desires()
-		state = null
-	if not des.is_empty():
-		des.sort()
-		state = des.desires[0]
+	state = des.first()
 
 func _physics_process(delta: float):
 	if state == null:
@@ -132,7 +129,7 @@ func _physics_process(delta: float):
 						finish_current()
 					return
 			else:
-				state = des.types.IDLE
+				des.add(0, des.types.IDLE)
 			animate("idle")
 	if(softCollision.is_colliding()):
 		velocity += softCollision.get_push_vector() * delta * 400

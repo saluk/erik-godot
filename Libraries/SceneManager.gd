@@ -64,13 +64,19 @@ func _ready():
 	
 func init_universe():
 	# Timer's only work when added to the scene
-	get_tree().root.add_child(agentTimer)
+	get_tree().get_root().add_child(agentTimer)
+	var fader:Node = load("res://UI/Fader.tscn").instance()
+	get_tree().get_root().add_child(fader)
 	agentTimer.start(AGENT_INTERVAL)
 	agentTimer.connect("timeout", self, "_process_agents", [AGENT_INTERVAL])
-	var original_scene = current_scene
+	var original_scene:String = current_scene
+	var file_names := []
 	for scene_name in ["Scene1", "Scene2", "Milestone1a"]:
-		print("Loading...", scene_name)
-		var file_name = "res://maps/"+scene_name+".tscn"
+		file_names.push_back("res://maps/"+scene_name+".tscn")
+	if not original_scene in file_names:
+		file_names.push_back(original_scene)
+	for file_name in file_names:
+		print("Loading...", file_name)
 		var loaded_resource = load(file_name)
 		scenes[file_name] = {
 			"scene":loaded_resource,
@@ -84,6 +90,16 @@ func init_universe():
 	print(scenes)
 	print("original scene:",original_scene)
 	change_scene(original_scene)
+	pause_scene()
+	(fader.find_node("AnimationPlayer") as AnimationPlayer).play("fadeup")
+	yield(fader.find_node("AnimationPlayer"), "animation_finished")
+	unpause_scene()
+	
+func pause_scene():
+	get_tree().paused = true
+	
+func unpause_scene():
+	get_tree().paused = false
 	
 func add_metadata(loaded_scene:Node, scene_name:String):
 	loaded_scene.propagate_call("add_metadata", [self, scene_name])

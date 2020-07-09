@@ -17,6 +17,11 @@ shader_param/active = false
 animations = [ {
 "frames": [ ExtResource( 7 ), ExtResource( 1 ), ExtResource( 5 ), ExtResource( 6 ) ],
 "loop": true,
+"name": "default",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 7 ), ExtResource( 1 ), ExtResource( 5 ), ExtResource( 6 ) ],
+"loop": true,
 "name": "idle",
 "speed": 5.0
 } ]
@@ -29,7 +34,6 @@ material = SubResource( 1 )
 position = Vector2( 0, 8 )
 scale = Vector2( 1.5, 1.5 )
 frames = SubResource( 2 )
-frame = 3
 
 [node name="Shadow" parent="." index="1"]
 visible = false

@@ -769,6 +769,7 @@ material = SubResource( 1 )
 position = Vector2( 1, -13 )
 texture = ExtResource( 1 )
 hframes = 60
+frame = 18
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -5 )
@@ -804,7 +805,7 @@ parameters/Run/blend_position = Vector2( 0.18281, -0.226286 )
 
 [node name="Position2D" type="Position2D" parent="."]
 position = Vector2( 0, -8 )
-rotation = 1.5708
+rotation = -3.14159
 
 [node name="SwordHitBox" parent="Position2D" instance=ExtResource( 3 )]
 collision_mask = 8

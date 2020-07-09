@@ -12,7 +12,7 @@ enum types {
 }
 
 class Desire:
-	extends Object
+	extends Reference
 	var type:int = types.IDLE
 	var priority:int
 	var meet_required_f:FuncRef
@@ -34,6 +34,12 @@ func sort():
 
 func remove(d:Desire):
 	desires.erase(d)
+
+func first():
+	sort()
+	if is_empty():
+		return null
+	return desires[0]
 
 func add(priority:int, desire:int, arg:Dictionary={}) -> Desire:
 	var d = Desire.new()

@@ -11,63 +11,63 @@ resource_local_to_scene = true
 shader = ExtResource( 3 )
 shader_param/active = false
 
-[sub_resource type="AtlasTexture" id=16]
+[sub_resource type="AtlasTexture" id=53]
 atlas = ExtResource( 2 )
 region = Rect2( 0, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=17]
+[sub_resource type="AtlasTexture" id=54]
 atlas = ExtResource( 2 )
 region = Rect2( 16, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=18]
+[sub_resource type="AtlasTexture" id=55]
 atlas = ExtResource( 2 )
 region = Rect2( 32, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=19]
+[sub_resource type="AtlasTexture" id=56]
 atlas = ExtResource( 2 )
 region = Rect2( 48, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=20]
+[sub_resource type="AtlasTexture" id=57]
 atlas = ExtResource( 2 )
 region = Rect2( 64, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=21]
+[sub_resource type="AtlasTexture" id=58]
 atlas = ExtResource( 2 )
 region = Rect2( 80, 0, 16, 16 )
 
-[sub_resource type="AtlasTexture" id=22]
+[sub_resource type="AtlasTexture" id=59]
 atlas = ExtResource( 5 )
 region = Rect2( 0, 0, 16, 17 )
 
-[sub_resource type="AtlasTexture" id=23]
+[sub_resource type="AtlasTexture" id=60]
 atlas = ExtResource( 5 )
 region = Rect2( 16, 0, 16, 17 )
 
-[sub_resource type="AtlasTexture" id=24]
+[sub_resource type="AtlasTexture" id=61]
 atlas = ExtResource( 5 )
 region = Rect2( 32, 0, 16, 17 )
 
-[sub_resource type="AtlasTexture" id=25]
+[sub_resource type="AtlasTexture" id=62]
 atlas = ExtResource( 5 )
 region = Rect2( 48, 0, 16, 17 )
 
-[sub_resource type="AtlasTexture" id=26]
+[sub_resource type="AtlasTexture" id=63]
 atlas = ExtResource( 5 )
 region = Rect2( 64, 0, 16, 17 )
 
-[sub_resource type="AtlasTexture" id=27]
+[sub_resource type="AtlasTexture" id=64]
 atlas = ExtResource( 5 )
 region = Rect2( 80, 0, 16, 17 )
 
 [sub_resource type="SpriteFrames" id=14]
 resource_local_to_scene = true
 animations = [ {
-"frames": [ SubResource( 16 ), SubResource( 17 ), SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ) ],
+"frames": [ SubResource( 53 ), SubResource( 54 ), SubResource( 55 ), SubResource( 56 ), SubResource( 57 ), SubResource( 58 ) ],
 "loop": true,
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ), SubResource( 27 ) ],
+"frames": [ SubResource( 59 ), SubResource( 60 ), SubResource( 61 ), SubResource( 62 ), SubResource( 63 ), SubResource( 64 ) ],
 "loop": true,
 "name": "talk",
 "speed": 5.0
@@ -81,8 +81,7 @@ material = SubResource( 15 )
 position = Vector2( 0, 7 )
 scale = Vector2( 1, 1.1875 )
 frames = SubResource( 14 )
-animation = "default"
-frame = 4
+frame = 3
 
 [editable path="SoftCollision"]
 
