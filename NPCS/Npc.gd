@@ -86,6 +86,14 @@ func _physics_process(delta: float):
 			if follow_path_to(wanderController.target_position, delta, 4):
 				velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
 			animate("idle")
+		des.types.FLEE:
+			if des.time_finished(state, delta):
+				finish_current()
+				return
+			var flee_position = state.args["position"] + state.args["position"].direction_to(global_position) * 200
+			if follow_path_to(flee_position, delta, 4):
+				velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+			animate("idle")
 		des.types.USE:
 			if not state.args["target"]:
 				for node in Nodes.find_nodes_with_property(get_tree().current_scene, "item", state.args["item"]):
@@ -163,7 +171,7 @@ func pick_random_state(state_list):
 func _on_FollowingObject_finished_path():
 	pass
 
-func _on_HurtBox_area_entered(area):
+func do_interact(player):
 	player_talk()
 
 #Overwrite for different logic

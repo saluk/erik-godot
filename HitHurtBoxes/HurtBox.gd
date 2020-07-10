@@ -36,3 +36,6 @@ func _on_HurtBox_invinsibility_ended():
 
 func _on_HurtBox_invinsibility_started():
 	collisionShape.set_deferred("Disabled", true)
+
+func do_interact(player):
+	get_parent().do_interact(player)

@@ -81,7 +81,7 @@ material = SubResource( 15 )
 position = Vector2( 0, 7 )
 scale = Vector2( 1, 1.1875 )
 frames = SubResource( 14 )
-frame = 2
+frame = 5
 
 [editable path="SoftCollision"]
 

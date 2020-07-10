@@ -21,4 +21,3 @@ shape = SubResource( 1 )
 position = Vector2( -0.874987, -3.09944e-06 )
 scale = Vector2( 0.0205683, 0.0248447 )
 texture = ExtResource( 1 )
-[connection signal="area_entered" from="." to="." method="_on_area_entered"]

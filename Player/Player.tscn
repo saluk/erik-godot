@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=2]
+[gd_scene load_steps=61 format=2]
 
 [ext_resource path="res://Player/Player.png" type="Texture" id=1]
 [ext_resource path="res://Player/Player.gd" type="Script" id=2]
@@ -697,7 +697,7 @@ blend_mode = 1
 
 [sub_resource type="AnimationNodeStateMachine" id=45]
 states/Attack/node = SubResource( 23 )
-states/Attack/position = Vector2( 395.5, 239 )
+states/Attack/position = Vector2( 389.75, 175 )
 states/Idle/node = SubResource( 28 )
 states/Idle/position = Vector2( 390.5, 111.133 )
 states/Roll/node = SubResource( 33 )
@@ -706,8 +706,12 @@ states/Run/node = SubResource( 38 )
 states/Run/position = Vector2( 564.5, 108.875 )
 transitions = [ "Idle", "Run", SubResource( 39 ), "Run", "Idle", SubResource( 40 ), "Idle", "Attack", SubResource( 41 ), "Attack", "Idle", SubResource( 42 ), "Idle", "Roll", SubResource( 43 ), "Roll", "Idle", SubResource( 44 ) ]
 start_node = "Idle"
+graph_offset = Vector2( 0, -8.60916 )
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id=46]
+
+[sub_resource type="RectangleShape2D" id=51]
+extents = Vector2( 8, 8 )
 
 [sub_resource type="CapsuleShape2D" id=47]
 radius = 9.0
@@ -798,10 +802,24 @@ anims/RunUp = SubResource( 18 )
 tree_root = SubResource( 45 )
 anim_player = NodePath("../AnimationPlayer")
 parameters/playback = SubResource( 46 )
-parameters/Attack/blend_position = Vector2( 0, 0 )
+parameters/Attack/blend_position = Vector2( -0.997487, -0.0214485 )
 parameters/Idle/blend_position = Vector2( 0, 0 )
 parameters/Roll/blend_position = Vector2( 0, 0 )
 parameters/Run/blend_position = Vector2( 0.18281, -0.226286 )
+
+[node name="InteractionPivot" type="Position2D" parent="."]
+position = Vector2( 0, -6 )
+skew = 4.37114e-08
+
+[node name="InteractionArea" type="Area2D" parent="InteractionPivot"]
+skew = 4.37114e-08
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionPivot/InteractionArea"]
+shape = SubResource( 51 )
+
+[node name="EquippedTool" type="Position2D" parent="InteractionPivot"]
 
 [node name="Position2D" type="Position2D" parent="."]
 position = Vector2( 0, -8 )
@@ -831,7 +849,8 @@ stream = ExtResource( 8 )
 [node name="BlinkAnimationPlayer" type="AnimationPlayer" parent="."]
 anims/Start = SubResource( 49 )
 anims/Stop = SubResource( 50 )
-[connection signal="collect_item" from="Position2D/SwordHitBox" to="." method="_on_SwordHitBox_collect_item"]
+[connection signal="area_entered" from="InteractionPivot/InteractionArea" to="." method="_on_InteractionArea_area_entered"]
+[connection signal="area_exited" from="InteractionPivot/InteractionArea" to="." method="_on_InteractionArea_area_exited"]
 [connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
 [connection signal="invinsibility_ended" from="HurtBox" to="." method="_on_HurtBox_invinsibility_ended"]
 [connection signal="invinsibility_started" from="HurtBox" to="." method="_on_HurtBox_invinsibility_started"]

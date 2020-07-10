@@ -10,7 +10,7 @@ func _ready():
 func _input(event):
 	if not panel.visible:
 		return
-	if event.is_action_pressed("attack"):
+	if event.is_action_pressed("interact"):
 		panel.visible = false
 		get_tree().set_input_as_handled()
 		EventSystem.emit_signal("text_cleared")

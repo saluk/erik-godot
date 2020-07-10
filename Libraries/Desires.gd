@@ -8,7 +8,8 @@ enum types {
 	WANDER,
 	GREET,
 	CREATE,
-	WAITING
+	WAITING,
+	FLEE
 }
 
 class Desire:

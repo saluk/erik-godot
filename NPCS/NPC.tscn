@@ -107,7 +107,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="finished_path" from="FollowingObject" to="." method="_on_FollowingObject_finished_path"]
-[connection signal="area_entered" from="HurtBox" to="." method="_on_HurtBox_area_entered"]
 
 [editable path="SoftCollision"]
 
