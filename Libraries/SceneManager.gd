@@ -71,8 +71,9 @@ func init_universe():
 	agentTimer.connect("timeout", self, "_process_agents", [AGENT_INTERVAL])
 	var original_scene:String = current_scene
 	var file_names := []
-	for scene_name in ["Scene1", "Scene2", "Milestone1a"]:
-		file_names.push_back("res://maps/"+scene_name+".tscn")
+	for file_name in Files.filenames("res://maps/"):
+		if String(file_name).ends_with(".tscn"):
+			file_names.push_back("res://maps/"+file_name)
 	if not original_scene in file_names:
 		file_names.push_back(original_scene)
 	for file_name in file_names:
